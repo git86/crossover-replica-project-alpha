@@ -1,14 +1,48 @@
 
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
-import { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    email: "",
+    password: ""
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setFormData({
+      ...formData,
+      [id]: value
+    });
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    // Simulate authentication process
+    setTimeout(() => {
+      setIsLoading(false);
+      
+      // Mock successful login
+      if (formData.email && formData.password) {
+        toast.success("Signed in successfully!");
+        navigate("/dashboard");
+      } else {
+        toast.error("Please enter both email and password");
+      }
+    }, 1000);
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -23,7 +57,7 @@ const SignIn = () => {
               </p>
             </div>
 
-            <form className="space-y-6">
+            <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="space-y-1">
                 <label htmlFor="email" className="text-sm font-medium text-gray-700">
                   Email Address
@@ -37,6 +71,8 @@ const SignIn = () => {
                     type="email" 
                     placeholder="you@example.com" 
                     className="pl-10"
+                    value={formData.email}
+                    onChange={handleInputChange}
                   />
                 </div>
               </div>
@@ -59,6 +95,8 @@ const SignIn = () => {
                     type={showPassword ? "text" : "password"} 
                     placeholder="••••••••" 
                     className="pl-10"
+                    value={formData.password}
+                    onChange={handleInputChange}
                   />
                   <button
                     type="button"
@@ -86,8 +124,12 @@ const SignIn = () => {
                 </label>
               </div>
 
-              <Button className="w-full bg-blue-600 hover:bg-blue-700">
-                Sign In
+              <Button 
+                className="w-full bg-blue-600 hover:bg-blue-700" 
+                disabled={isLoading}
+                type="submit"
+              >
+                {isLoading ? "Signing In..." : "Sign In"}
               </Button>
             </form>
 
