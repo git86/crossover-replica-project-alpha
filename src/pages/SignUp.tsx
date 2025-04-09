@@ -17,6 +17,7 @@ const SignUp = () => {
     password: ""
   });
   const [isLoading, setIsLoading] = useState(false);
+  const [termsAccepted, setTermsAccepted] = useState(false);
   const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,18 +30,62 @@ const SignUp = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!termsAccepted) {
+      toast.error("Please accept the terms and conditions");
+      return;
+    }
+    
     setIsLoading(true);
     
-    // Simulate registration process
-    setTimeout(() => {
+    // Validate form
+    if (!formData.fullName || !formData.email || !formData.password) {
       setIsLoading(false);
-      
-      // Mock successful registration
-      if (formData.fullName && formData.email && formData.password) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+    
+    if (formData.password.length < 8) {
+      setIsLoading(false);
+      toast.error("Password must be at least 8 characters");
+      return;
+    }
+    
+    // Create a user object to save
+    const user = {
+      id: Date.now().toString(),
+      fullName: formData.fullName,
+      email: formData.email,
+      password: formData.password, // Note: In a real app, never store plain text passwords
+      createdAt: new Date().toISOString(),
+      profilePicture: null,
+      role: "applicant"
+    };
+    
+    // Simulate API call
+    setTimeout(() => {
+      try {
+        // Check if user already exists
+        const existingUsers = JSON.parse(localStorage.getItem("users") || "[]");
+        const emailExists = existingUsers.some((u: any) => u.email === formData.email);
+        
+        if (emailExists) {
+          throw new Error("User with this email already exists");
+        }
+        
+        // Save user
+        const updatedUsers = [...existingUsers, user];
+        localStorage.setItem("users", JSON.stringify(updatedUsers));
+        
+        // Save current user info (for "session")
+        localStorage.setItem("currentUser", JSON.stringify(user));
+        
         toast.success("Account created successfully!");
         navigate("/dashboard");
-      } else {
-        toast.error("Please fill in all required fields");
+      } catch (error) {
+        toast.error((error as Error).message || "Registration failed");
+      } finally {
+        setIsLoading(false);
       }
     }, 1000);
   };
@@ -136,6 +181,8 @@ const SignUp = () => {
                   name="terms"
                   type="checkbox"
                   className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                  checked={termsAccepted}
+                  onChange={() => setTermsAccepted(!termsAccepted)}
                 />
                 <label htmlFor="terms" className="ml-2 block text-sm text-gray-700">
                   I agree to the{" "}

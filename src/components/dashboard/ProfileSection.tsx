@@ -1,46 +1,66 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Pencil, CheckCircle } from "lucide-react";
+import { toast } from "sonner";
 
-const ProfileSection = () => {
+interface ProfileSectionProps {
+  user: any;
+  setUser: (user: any) => void;
+}
+
+const ProfileSection = ({ user, setUser }: ProfileSectionProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    phone: "+1 (555) 123-4567",
-    location: "San Francisco, CA",
-    title: "Senior Software Engineer",
-    about: "Experienced software engineer with over 8 years of expertise in web development, specializing in React and TypeScript. Passionate about creating clean, efficient, and scalable code.",
-    skills: ["JavaScript", "TypeScript", "React", "Node.js", "GraphQL"],
-    experience: [
-      {
-        company: "Tech Solutions Inc.",
-        title: "Senior Software Engineer",
-        period: "2020 - Present",
-        description: "Led development of multiple web applications using React and TypeScript."
-      },
-      {
-        company: "Digital Innovations",
-        title: "Software Engineer",
-        period: "2018 - 2020",
-        description: "Worked on front-end development using Angular and React."
-      }
-    ],
-    education: [
-      {
-        institution: "Stanford University",
-        degree: "M.S. Computer Science",
-        year: "2018"
-      },
-      {
-        institution: "University of California",
-        degree: "B.S. Computer Science",
-        year: "2016"
-      }
-    ]
+    name: "",
+    email: "",
+    phone: "",
+    location: "",
+    title: "",
+    about: "",
+    skills: [] as string[],
+    experience: [] as any[],
+    education: [] as any[]
   });
+
+  // Initialize profile from user data or default values
+  useEffect(() => {
+    if (user) {
+      // Load user profile from localStorage if it exists
+      const savedProfile = localStorage.getItem(`profile_${user.id}`);
+      
+      if (savedProfile) {
+        setProfile(JSON.parse(savedProfile));
+      } else {
+        // Initialize with user data and defaults
+        setProfile({
+          name: user.fullName || "",
+          email: user.email || "",
+          phone: user.phone || "",
+          location: user.location || "",
+          title: user.title || "Job Seeker",
+          about: user.about || "Tell us about yourself...",
+          skills: user.skills || ["JavaScript", "React", "Web Development"],
+          experience: user.experience || [
+            {
+              company: "Previous Company",
+              title: "Job Title",
+              period: "2020 - Present",
+              description: "Describe your responsibilities and achievements."
+            }
+          ],
+          education: user.education || [
+            {
+              institution: "University Name",
+              degree: "Degree",
+              year: "Graduation Year"
+            }
+          ]
+        });
+      }
+    }
+  }, [user]);
 
   const handleEdit = () => {
     setIsEditing(true);
@@ -48,7 +68,52 @@ const ProfileSection = () => {
 
   const handleSave = () => {
     setIsEditing(false);
-    // Here you would typically save the profile data to a backend
+    
+    try {
+      // Save profile to localStorage
+      localStorage.setItem(`profile_${user.id}`, JSON.stringify(profile));
+      
+      // Update user object with profile changes
+      const updatedUser = {
+        ...user,
+        fullName: profile.name,
+        email: profile.email
+      };
+      
+      // Update user in localStorage
+      localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+      
+      // Update users array
+      const users = JSON.parse(localStorage.getItem("users") || "[]");
+      const updatedUsers = users.map((u: any) => 
+        u.id === user.id ? { ...u, fullName: profile.name, email: profile.email } : u
+      );
+      localStorage.setItem("users", JSON.stringify(updatedUsers));
+      
+      // Update parent component
+      setUser(updatedUser);
+      
+      toast.success("Profile updated successfully");
+    } catch (error) {
+      toast.error("Failed to save profile changes");
+    }
+  };
+
+  const handleChange = (field: string, value: any) => {
+    setProfile({
+      ...profile,
+      [field]: value
+    });
+  };
+
+  const handleSkillAdd = () => {
+    const newSkill = prompt("Enter new skill:");
+    if (newSkill && !profile.skills.includes(newSkill)) {
+      setProfile({
+        ...profile,
+        skills: [...profile.skills, newSkill]
+      });
+    }
   };
 
   return (
@@ -79,16 +144,16 @@ const ProfileSection = () => {
               <div className="space-y-2">
                 <Input 
                   value={profile.name} 
-                  onChange={(e) => setProfile({...profile, name: e.target.value})}
+                  onChange={(e) => handleChange("name", e.target.value)}
                   className="font-bold text-lg"
                 />
                 <Input 
                   value={profile.title} 
-                  onChange={(e) => setProfile({...profile, title: e.target.value})}
+                  onChange={(e) => handleChange("title", e.target.value)}
                 />
                 <Input 
                   value={profile.location} 
-                  onChange={(e) => setProfile({...profile, location: e.target.value})}
+                  onChange={(e) => handleChange("location", e.target.value)}
                 />
               </div>
             ) : (
@@ -111,7 +176,7 @@ const ProfileSection = () => {
             {isEditing ? (
               <Input 
                 value={profile.email} 
-                onChange={(e) => setProfile({...profile, email: e.target.value})}
+                onChange={(e) => handleChange("email", e.target.value)}
               />
             ) : (
               <p>{profile.email}</p>
@@ -122,10 +187,10 @@ const ProfileSection = () => {
             {isEditing ? (
               <Input 
                 value={profile.phone} 
-                onChange={(e) => setProfile({...profile, phone: e.target.value})}
+                onChange={(e) => handleChange("phone", e.target.value)}
               />
             ) : (
-              <p>{profile.phone}</p>
+              <p>{profile.phone || "Not provided"}</p>
             )}
           </div>
         </div>
@@ -137,7 +202,7 @@ const ProfileSection = () => {
         {isEditing ? (
           <textarea 
             value={profile.about} 
-            onChange={(e) => setProfile({...profile, about: e.target.value})}
+            onChange={(e) => handleChange("about", e.target.value)}
             className="w-full p-2 border rounded-md"
             rows={4}
           />
@@ -148,11 +213,34 @@ const ProfileSection = () => {
 
       {/* Skills */}
       <div className="border-b pb-6">
-        <h3 className="text-lg font-semibold mb-4">Skills</h3>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold">Skills</h3>
+          {isEditing && (
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleSkillAdd}
+            >
+              Add Skill
+            </Button>
+          )}
+        </div>
         <div className="flex flex-wrap gap-2">
           {profile.skills.map((skill, index) => (
             <span key={index} className="bg-blue-50 text-crossover-blue px-3 py-1 rounded-full text-sm">
               {skill}
+              {isEditing && (
+                <button 
+                  className="ml-2 text-red-500 hover:text-red-700"
+                  onClick={() => {
+                    const updatedSkills = [...profile.skills];
+                    updatedSkills.splice(index, 1);
+                    handleChange("skills", updatedSkills);
+                  }}
+                >
+                  ×
+                </button>
+              )}
             </span>
           ))}
         </div>
@@ -160,14 +248,89 @@ const ProfileSection = () => {
 
       {/* Experience */}
       <div className="border-b pb-6">
-        <h3 className="text-lg font-semibold mb-4">Experience</h3>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold">Experience</h3>
+          {isEditing && (
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => {
+                const newExperience = {
+                  company: "Company Name",
+                  title: "Job Title",
+                  period: "Start - End",
+                  description: "Job Description"
+                };
+                handleChange("experience", [...profile.experience, newExperience]);
+              }}
+            >
+              Add Experience
+            </Button>
+          )}
+        </div>
         <div className="space-y-4">
           {profile.experience.map((exp, index) => (
             <div key={index} className="border-l-2 border-gray-200 pl-4">
-              <h4 className="font-semibold">{exp.title}</h4>
-              <p className="text-crossover-blue">{exp.company}</p>
-              <p className="text-gray-500 text-sm">{exp.period}</p>
-              <p className="text-gray-700 mt-2">{exp.description}</p>
+              {isEditing ? (
+                <div className="space-y-2">
+                  <Input 
+                    value={exp.title} 
+                    onChange={(e) => {
+                      const updated = [...profile.experience];
+                      updated[index] = { ...exp, title: e.target.value };
+                      handleChange("experience", updated);
+                    }}
+                    placeholder="Job Title"
+                  />
+                  <Input 
+                    value={exp.company} 
+                    onChange={(e) => {
+                      const updated = [...profile.experience];
+                      updated[index] = { ...exp, company: e.target.value };
+                      handleChange("experience", updated);
+                    }}
+                    placeholder="Company"
+                  />
+                  <Input 
+                    value={exp.period} 
+                    onChange={(e) => {
+                      const updated = [...profile.experience];
+                      updated[index] = { ...exp, period: e.target.value };
+                      handleChange("experience", updated);
+                    }}
+                    placeholder="Period (e.g., 2020 - Present)"
+                  />
+                  <textarea 
+                    value={exp.description} 
+                    onChange={(e) => {
+                      const updated = [...profile.experience];
+                      updated[index] = { ...exp, description: e.target.value };
+                      handleChange("experience", updated);
+                    }}
+                    className="w-full p-2 border rounded-md"
+                    rows={2}
+                    placeholder="Description"
+                  />
+                  <Button 
+                    variant="destructive" 
+                    size="sm"
+                    onClick={() => {
+                      const updated = [...profile.experience];
+                      updated.splice(index, 1);
+                      handleChange("experience", updated);
+                    }}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <h4 className="font-semibold">{exp.title}</h4>
+                  <p className="text-crossover-blue">{exp.company}</p>
+                  <p className="text-gray-500 text-sm">{exp.period}</p>
+                  <p className="text-gray-700 mt-2">{exp.description}</p>
+                </>
+              )}
             </div>
           ))}
         </div>
@@ -175,13 +338,76 @@ const ProfileSection = () => {
 
       {/* Education */}
       <div>
-        <h3 className="text-lg font-semibold mb-4">Education</h3>
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="text-lg font-semibold">Education</h3>
+          {isEditing && (
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => {
+                const newEducation = {
+                  institution: "University Name",
+                  degree: "Degree",
+                  year: "Graduation Year"
+                };
+                handleChange("education", [...profile.education, newEducation]);
+              }}
+            >
+              Add Education
+            </Button>
+          )}
+        </div>
         <div className="space-y-4">
           {profile.education.map((edu, index) => (
             <div key={index} className="border-l-2 border-gray-200 pl-4">
-              <h4 className="font-semibold">{edu.degree}</h4>
-              <p className="text-crossover-blue">{edu.institution}</p>
-              <p className="text-gray-500 text-sm">{edu.year}</p>
+              {isEditing ? (
+                <div className="space-y-2">
+                  <Input 
+                    value={edu.degree} 
+                    onChange={(e) => {
+                      const updated = [...profile.education];
+                      updated[index] = { ...edu, degree: e.target.value };
+                      handleChange("education", updated);
+                    }}
+                    placeholder="Degree"
+                  />
+                  <Input 
+                    value={edu.institution} 
+                    onChange={(e) => {
+                      const updated = [...profile.education];
+                      updated[index] = { ...edu, institution: e.target.value };
+                      handleChange("education", updated);
+                    }}
+                    placeholder="Institution"
+                  />
+                  <Input 
+                    value={edu.year} 
+                    onChange={(e) => {
+                      const updated = [...profile.education];
+                      updated[index] = { ...edu, year: e.target.value };
+                      handleChange("education", updated);
+                    }}
+                    placeholder="Year"
+                  />
+                  <Button 
+                    variant="destructive" 
+                    size="sm"
+                    onClick={() => {
+                      const updated = [...profile.education];
+                      updated.splice(index, 1);
+                      handleChange("education", updated);
+                    }}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              ) : (
+                <>
+                  <h4 className="font-semibold">{edu.degree}</h4>
+                  <p className="text-crossover-blue">{edu.institution}</p>
+                  <p className="text-gray-500 text-sm">{edu.year}</p>
+                </>
+              )}
             </div>
           ))}
         </div>

@@ -1,45 +1,56 @@
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
-import { Link } from "react-router-dom";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import { toast } from "sonner";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: ""
-  });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target;
-    setFormData({
-      ...formData,
-      [id]: value
-    });
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate authentication process
-    setTimeout(() => {
+
+    // Validate inputs
+    if (!email || !password) {
+      toast.error("Please enter both email and password");
       setIsLoading(false);
-      
-      // Mock successful login
-      if (formData.email && formData.password) {
-        toast.success("Signed in successfully!");
-        navigate("/dashboard");
-      } else {
-        toast.error("Please enter both email and password");
+      return;
+    }
+
+    // Check user credentials against localStorage
+    setTimeout(() => {
+      try {
+        const users = JSON.parse(localStorage.getItem("users") || "[]");
+        const user = users.find((u: any) => u.email === email && u.password === password);
+        
+        if (user) {
+          // Store current user (session)
+          localStorage.setItem("currentUser", JSON.stringify(user));
+          
+          // If remember me is checked, store login state
+          if (rememberMe) {
+            localStorage.setItem("isLoggedIn", "true");
+          }
+          
+          toast.success("Login successful!");
+          navigate("/dashboard");
+        } else {
+          toast.error("Invalid email or password");
+        }
+      } catch (error) {
+        toast.error("Authentication failed");
+      } finally {
+        setIsLoading(false);
       }
     }, 1000);
   };
@@ -51,9 +62,9 @@ const SignIn = () => {
         <div className="container-custom max-w-md">
           <div className="bg-white p-8 rounded-lg shadow-md">
             <div className="text-center mb-8">
-              <h1 className="text-2xl font-bold mb-2 text-gray-900">Sign In to Crossover</h1>
+              <h1 className="text-2xl font-bold mb-2 text-gray-900">Welcome Back</h1>
               <p className="text-gray-600">
-                Access your account to manage your remote work experience
+                Sign in to continue to your dashboard
               </p>
             </div>
 
@@ -71,8 +82,8 @@ const SignIn = () => {
                     type="email" 
                     placeholder="you@example.com" 
                     className="pl-10"
-                    value={formData.email}
-                    onChange={handleInputChange}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
               </div>
@@ -82,9 +93,9 @@ const SignIn = () => {
                   <label htmlFor="password" className="text-sm font-medium text-gray-700">
                     Password
                   </label>
-                  <Link to="/forgot-password" className="text-sm text-blue-600 hover:text-blue-500">
+                  <a href="#" className="text-sm text-blue-600 hover:text-blue-500">
                     Forgot password?
-                  </Link>
+                  </a>
                 </div>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -95,8 +106,8 @@ const SignIn = () => {
                     type={showPassword ? "text" : "password"} 
                     placeholder="••••••••" 
                     className="pl-10"
-                    value={formData.password}
-                    onChange={handleInputChange}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                   <button
                     type="button"
@@ -112,16 +123,20 @@ const SignIn = () => {
                 </div>
               </div>
 
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-                />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
-                  Remember me
-                </label>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <input
+                    id="remember-me"
+                    name="remember-me"
+                    type="checkbox"
+                    className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                    checked={rememberMe}
+                    onChange={() => setRememberMe(!rememberMe)}
+                  />
+                  <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                    Remember me
+                  </label>
+                </div>
               </div>
 
               <Button 
@@ -129,7 +144,7 @@ const SignIn = () => {
                 disabled={isLoading}
                 type="submit"
               >
-                {isLoading ? "Signing In..." : "Sign In"}
+                {isLoading ? "Signing in..." : "Sign in"}
               </Button>
             </form>
 
