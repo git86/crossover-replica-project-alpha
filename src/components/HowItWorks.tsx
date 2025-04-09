@@ -6,7 +6,7 @@ const HowItWorks = () => {
     {
       icon: <Search className="h-10 w-10 text-crossover-blue" />,
       title: 'Define Your Needs',
-      description: 'Tell us about your company needs and the roles you're looking to fill.'
+      description: 'Tell us about your company needs and the roles you\'re looking to fill.'
     },
     {
       icon: <Users className="h-10 w-10 text-crossover-blue" />,

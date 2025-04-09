@@ -6,7 +6,7 @@ const AssessmentProcess = () => {
     {
       icon: <CheckCircle className="h-10 w-10 text-crossover-blue" />,
       title: 'Application Review',
-      description: 'Submit your profile and we'll review your qualifications to determine fit for open positions.'
+      description: 'Submit your profile and we\'ll review your qualifications to determine fit for open positions.'
     },
     {
       icon: <BarChart className="h-10 w-10 text-crossover-blue" />,
