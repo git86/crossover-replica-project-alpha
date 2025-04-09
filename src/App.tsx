@@ -17,6 +17,7 @@ import Enterprise from "./pages/Enterprise";
 import SuccessStories from "./pages/SuccessStories";
 import Blog from "./pages/Blog";
 import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
 import Careers from "./pages/Careers";
 import Hire from "./pages/Hire";
 import Testimonials from "./pages/Testimonials";
@@ -48,6 +49,7 @@ const App = () => (
           <Route path="/success-stories" element={<SuccessStories />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/sign-up" element={<SignUp />} />
           <Route path="/careers" element={<Careers />} />
           <Route path="/hire" element={<Hire />} />
           <Route path="/testimonials" element={<Testimonials />} />
