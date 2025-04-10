@@ -9,6 +9,9 @@ import ApplicationsSection from "@/components/dashboard/ApplicationsSection";
 import MessagesSection from "@/components/dashboard/MessagesSection";
 import SavedJobsSection from "@/components/dashboard/SavedJobsSection";
 import SettingsSection from "@/components/dashboard/SettingsSection";
+import AdminJobsSection from "@/components/dashboard/admin/AdminJobsSection";
+import AdminApplicantsSection from "@/components/dashboard/admin/AdminApplicantsSection";
+import AdminInterviewsSection from "@/components/dashboard/admin/AdminInterviewsSection";
 import { toast } from "sonner";
 
 interface User {
@@ -62,6 +65,25 @@ const Dashboard = () => {
       return <div className="flex justify-center items-center h-64">Loading...</div>;
     }
     
+    // If user is an admin, show admin sections
+    if (user?.role === "admin") {
+      switch (activeSection) {
+        case "profile":
+          return <ProfileSection user={user} setUser={setUser} />;
+        case "manage-jobs":
+          return <AdminJobsSection />;
+        case "manage-applicants":
+          return <AdminApplicantsSection />;
+        case "manage-interviews":
+          return <AdminInterviewsSection />;
+        case "settings":
+          return <SettingsSection onSignOut={handleSignOut} />;
+        default:
+          return <ProfileSection user={user} setUser={setUser} />;
+      }
+    }
+    
+    // For regular users, show the regular sections
     switch (activeSection) {
       case "profile":
         return <ProfileSection user={user} setUser={setUser} />;
@@ -88,18 +110,21 @@ const Dashboard = () => {
       <main className="flex-grow pt-16 bg-gray-50">
         <div className="container-custom py-8">
           <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-gray-900">Applicant Dashboard</h1>
+            <h1 className="text-2xl font-bold text-gray-900">
+              {user?.role === "admin" ? "Admin Dashboard" : "Applicant Dashboard"}
+            </h1>
             <div className="text-sm text-gray-500">
               Welcome back, <span className="font-semibold">{user?.fullName}</span>
             </div>
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            {/* Sidebar */}
+            {/* Sidebar - Different menu items for admin vs regular users */}
             <DashboardSidebar 
               activeSection={activeSection} 
               setActiveSection={setActiveSection} 
               onSignOut={handleSignOut}
+              isAdmin={user?.role === "admin"}
             />
             
             {/* Main Content */}

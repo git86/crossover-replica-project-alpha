@@ -1,21 +1,35 @@
 
-import { UserCircle, FileText, MessageSquare, Bookmark, Settings, LogOut } from "lucide-react";
+import { UserCircle, FileText, MessageSquare, Bookmark, Settings, LogOut, Briefcase, Users, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface DashboardSidebarProps {
   activeSection: string;
   setActiveSection: (section: string) => void;
   onSignOut: () => void;
+  isAdmin?: boolean;
 }
 
-const DashboardSidebar = ({ activeSection, setActiveSection, onSignOut }: DashboardSidebarProps) => {
-  const menuItems = [
+const DashboardSidebar = ({ activeSection, setActiveSection, onSignOut, isAdmin = false }: DashboardSidebarProps) => {
+  // Menu items for regular users
+  const userMenuItems = [
     { id: "profile", label: "My Profile", icon: <UserCircle /> },
     { id: "applications", label: "Applications", icon: <FileText /> },
     { id: "messages", label: "Messages", icon: <MessageSquare /> },
     { id: "saved", label: "Saved Jobs", icon: <Bookmark /> },
     { id: "settings", label: "Settings", icon: <Settings /> },
   ];
+
+  // Menu items for admin users
+  const adminMenuItems = [
+    { id: "profile", label: "My Profile", icon: <UserCircle /> },
+    { id: "manage-jobs", label: "Manage Jobs", icon: <Briefcase /> },
+    { id: "manage-applicants", label: "Manage Applicants", icon: <Users /> },
+    { id: "manage-interviews", label: "Manage Interviews", icon: <Calendar /> },
+    { id: "settings", label: "Settings", icon: <Settings /> },
+  ];
+
+  // Use different menu items based on user role
+  const menuItems = isAdmin ? adminMenuItems : userMenuItems;
 
   return (
     <div className="bg-white rounded-lg shadow p-4">
