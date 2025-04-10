@@ -8,7 +8,7 @@ const Testimonials = () => {
   const testimonials = [
     {
       id: 1,
-      text: "Crossover changed my life. I went from working at a local company to earning 3x my previous salary while working remotely for a top tech firm in Silicon Valley.",
+      text: "USS Agency changed my life. I went from working at a local company to earning 3x my previous salary while working remotely for a top tech firm in Silicon Valley.",
       author: "Maria Rodriguez",
       position: "Senior Software Engineer",
       company: "Based in Mexico City",
@@ -24,7 +24,7 @@ const Testimonials = () => {
     },
     {
       id: 3,
-      text: "After 10 years in traditional office jobs, Crossover helped me transition to remote work. The pay is better, the work is more challenging, and I can live wherever I want.",
+      text: "After 10 years in traditional office jobs, USS Agency helped me transition to remote work. The pay is better, the work is more challenging, and I can live wherever I want.",
       author: "Olga Petrova",
       position: "UX/UI Designer",
       company: "Based in Ukraine",
@@ -46,7 +46,7 @@ const Testimonials = () => {
         <div className="text-center mb-16">
           <h2 className="section-title">Success Stories</h2>
           <p className="section-subtitle">
-            Hear from talented professionals who have transformed their careers through Crossover.
+            Hear from talented professionals who have transformed their careers through USS Agency.
           </p>
         </div>
 
@@ -77,7 +77,7 @@ const Testimonials = () => {
                   {testimonials[activeIndex].author}
                 </h3>
                 <p className="text-gray-600">{testimonials[activeIndex].position}</p>
-                <p className="text-crossover-blue font-medium">{testimonials[activeIndex].company}</p>
+                <p className="text-USS Agency-blue font-medium">{testimonials[activeIndex].company}</p>
               </div>
             </div>
             <blockquote className="text-xl text-gray-700 italic leading-relaxed mb-6">
@@ -89,7 +89,7 @@ const Testimonials = () => {
           <div className="flex justify-center mt-8 space-x-4">
             <button 
               onClick={prevSlide}
-              className="w-10 h-10 rounded-full bg-crossover-gray text-gray-700 flex items-center justify-center hover:bg-crossover-blue hover:text-white transition-colors"
+              className="w-10 h-10 rounded-full bg-USS Agency-gray text-gray-700 flex items-center justify-center hover:bg-USS Agency-blue hover:text-white transition-colors"
               aria-label="Previous testimonial"
             >
               <ChevronLeft className="h-6 w-6" />
@@ -102,7 +102,7 @@ const Testimonials = () => {
                   key={index}
                   onClick={() => setActiveIndex(index)}
                   className={`w-2.5 h-2.5 rounded-full ${
-                    index === activeIndex ? 'bg-crossover-blue' : 'bg-gray-300'
+                    index === activeIndex ? 'bg-USS Agency-blue' : 'bg-gray-300'
                   }`}
                   aria-label={`Go to testimonial ${index + 1}`}
                 />
@@ -111,7 +111,7 @@ const Testimonials = () => {
             
             <button 
               onClick={nextSlide}
-              className="w-10 h-10 rounded-full bg-crossover-gray text-gray-700 flex items-center justify-center hover:bg-crossover-blue hover:text-white transition-colors"
+              className="w-10 h-10 rounded-full bg-USS Agency-gray text-gray-700 flex items-center justify-center hover:bg-USS Agency-blue hover:text-white transition-colors"
               aria-label="Next testimonial"
             >
               <ChevronRight className="h-6 w-6" />

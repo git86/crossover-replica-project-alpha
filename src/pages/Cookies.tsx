@@ -17,7 +17,7 @@ const Cookies = () => {
 
               <h2 className="text-2xl font-semibold mt-10 mb-4">1. Introduction</h2>
               <p>
-                This Cookie Policy explains how Crossover ("we", "us", or "our") uses cookies and similar technologies to recognize you when you visit our website. It explains what these technologies are and why we use them, as well as your rights to control our use of them.
+                This Cookie Policy explains how USS Agency ("we", "us", or "our") uses cookies and similar technologies to recognize you when you visit our website. It explains what these technologies are and why we use them, as well as your rights to control our use of them.
               </p>
 
               <h2 className="text-2xl font-semibold mt-10 mb-4">2. What Are Cookies?</h2>

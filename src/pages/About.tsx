@@ -20,7 +20,7 @@ const About = () => {
         <section className="pt-32 pb-20 bg-gray-50">
           <div className="container-custom">
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">About Crossover</h1>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">About USS Agency</h1>
               <p className="text-xl text-gray-600 mb-10">
                 We connect the world&apos;s top talent with the world&apos;s most innovative companies.
               </p>
@@ -49,7 +49,7 @@ const About = () => {
               <div>
                 <h2 className="text-3xl font-bold mb-6 text-gray-900">Our Story</h2>
                 <p className="text-gray-600 mb-4">
-                  Crossover was founded in 2014 with a mission to connect the most talented people around the world with the most innovative companies, regardless of location.
+                USS Agency was founded in 2014 with a mission to connect the most talented people around the world with the most innovative companies, regardless of location.
                 </p>
                 <p className="text-gray-600 mb-4">
                   We believe that talent is equally distributed around the world, but opportunity is not. Our platform aims to bridge this gap by providing remote work opportunities that match skilled professionals with companies that value their talents.
@@ -80,7 +80,7 @@ const About = () => {
             <div className="max-w-3xl mx-auto text-center mb-16">
               <h2 className="text-3xl font-bold mb-6 text-gray-900">Our Values</h2>
               <p className="text-gray-600">
-                These principles guide everything we do at Crossover.
+                These principles guide everything we do at USS Agency.
               </p>
             </div>
 

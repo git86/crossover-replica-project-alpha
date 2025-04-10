@@ -59,7 +59,7 @@ const Careers = () => {
               <div>
                 <h2 className="text-3xl font-bold mb-6 text-gray-900">Our Mission</h2>
                 <p className="text-gray-600 mb-4">
-                  At Crossover, we believe that talent is equally distributed around the world, but opportunity is not. Our mission is to bridge this gap by building technology that connects the best talent with the most innovative companies, regardless of location.
+                  At USS Agency, we believe that talent is equally distributed around the world, but opportunity is not. Our mission is to bridge this gap by building technology that connects the best talent with the most innovative companies, regardless of location.
                 </p>
                 <p className="text-gray-600 mb-4">
                   We're creating a future where work is defined by skills and contributions rather than geography. By doing so, we're enabling a more inclusive and efficient global economy.
@@ -83,9 +83,9 @@ const Careers = () => {
         <section className="py-20 bg-gray-50">
           <div className="container-custom">
             <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold mb-6 text-gray-900">Why Join Crossover</h2>
+              <h2 className="text-3xl font-bold mb-6 text-gray-900">Why Join USS Agency</h2>
               <p className="text-gray-600 max-w-3xl mx-auto">
-                Working at Crossover means being part of a global team that's changing how work happens around the world.
+                Working at USS Agency means being part of a global team that's changing how work happens around the world.
               </p>
             </div>
 
@@ -176,13 +176,13 @@ const Careers = () => {
               <div className="text-6xl text-gray-200 absolute top-4 left-4">"</div>
               <div className="relative z-10">
                 <p className="text-lg md:text-xl text-gray-700 mb-6 italic">
-                  Working at Crossover has been transformative for my career. I get to collaborate with brilliant colleagues from all over the world while building technology that creates opportunities for thousands. The remote-first culture truly embodies the future of work we're helping to create.
+                  Working at USS Agency has been transformative for my career. I get to collaborate with brilliant colleagues from all over the world while building technology that creates opportunities for thousands. The remote-first culture truly embodies the future of work we're helping to create.
                 </p>
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-gray-300 rounded-full mr-4"></div>
                   <div>
                     <p className="font-bold text-gray-900">Maria Santos</p>
-                    <p className="text-blue-600">Engineering Manager, 3 years at Crossover</p>
+                    <p className="text-blue-600">Engineering Manager, 3 years at USS Agency</p>
                   </div>
                 </div>
               </div>
