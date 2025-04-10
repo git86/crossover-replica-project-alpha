@@ -40,7 +40,7 @@ const DashboardSidebar = ({ activeSection, setActiveSection, onSignOut, isAdmin 
             onClick={() => setActiveSection(item.id)}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-md text-left transition-colors ${
               activeSection === item.id
-                ? "bg-blue-50 text-crossover-blue font-medium"
+                ? "bg-blue-50 text-blue-600 font-medium"
                 : "text-gray-700 hover:bg-gray-100"
             }`}
           >

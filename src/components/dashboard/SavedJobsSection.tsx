@@ -5,11 +5,7 @@ import { Bookmark, ExternalLink, Trash2, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 
-interface SavedJobsSectionProps {
-  userId: string;
-}
-
-const SavedJobsSection = ({ userId }: SavedJobsSectionProps) => {
+const SavedJobsSection = () => {
   const [savedJobs, setSavedJobs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -17,6 +13,12 @@ const SavedJobsSection = ({ userId }: SavedJobsSectionProps) => {
     // Load saved jobs from localStorage
     const loadSavedJobs = () => {
       try {
+        // Get current user to find their saved jobs
+        const currentUser = localStorage.getItem("currentUser");
+        if (!currentUser) return;
+        
+        const userId = JSON.parse(currentUser).id;
+        
         const savedJobsData = localStorage.getItem(`savedJobs_${userId}`);
         if (savedJobsData) {
           setSavedJobs(JSON.parse(savedJobsData));
@@ -26,20 +28,20 @@ const SavedJobsSection = ({ userId }: SavedJobsSectionProps) => {
             {
               id: 1,
               position: "Senior React Developer",
-              company: "Tech Solutions Inc.",
+              company: "USS AGENCY Inc.",
               location: "Remote",
               salary: "$120K - $150K",
               postedDate: "2023-11-10",
-              logo: "TS"
+              logo: "UA"
             },
             {
               id: 2,
               position: "Frontend Engineer",
-              company: "Global Innovations",
+              company: "USS AGENCY Innovations",
               location: "Remote",
               salary: "$100K - $130K",
               postedDate: "2023-11-08",
-              logo: "GI"
+              logo: "UA"
             }
           ];
           
@@ -54,35 +56,55 @@ const SavedJobsSection = ({ userId }: SavedJobsSectionProps) => {
     };
     
     loadSavedJobs();
-  }, [userId]);
+  }, []);
 
   const handleRemoveJob = (jobId: number) => {
-    const updatedJobs = savedJobs.filter(job => job.id !== jobId);
-    setSavedJobs(updatedJobs);
-    localStorage.setItem(`savedJobs_${userId}`, JSON.stringify(updatedJobs));
-    toast.success("Job removed from saved list");
+    try {
+      // Get current user to find their saved jobs
+      const currentUser = localStorage.getItem("currentUser");
+      if (!currentUser) return;
+      
+      const userId = JSON.parse(currentUser).id;
+      
+      const updatedJobs = savedJobs.filter(job => job.id !== jobId);
+      setSavedJobs(updatedJobs);
+      localStorage.setItem(`savedJobs_${userId}`, JSON.stringify(updatedJobs));
+      toast.success("Job removed from saved list");
+    } catch (error) {
+      toast.error("Failed to remove job");
+    }
   };
 
   const handleAddSavedJob = () => {
-    // Simple modal for adding a mock saved job
-    const position = prompt("Enter job position:");
-    const company = prompt("Enter company name:");
-    
-    if (position && company) {
-      const newJob = {
-        id: Date.now(),
-        position,
-        company,
-        location: "Remote",
-        salary: "$100K - $140K",
-        postedDate: new Date().toISOString().split('T')[0],
-        logo: company.split(' ').map((word: string) => word[0]).join('').toUpperCase()
-      };
+    try {
+      // Get current user to find their saved jobs
+      const currentUser = localStorage.getItem("currentUser");
+      if (!currentUser) return;
       
-      const updatedJobs = [...savedJobs, newJob];
-      setSavedJobs(updatedJobs);
-      localStorage.setItem(`savedJobs_${userId}`, JSON.stringify(updatedJobs));
-      toast.success("Job saved successfully");
+      const userId = JSON.parse(currentUser).id;
+      
+      // Simple modal for adding a mock saved job
+      const position = prompt("Enter job position:");
+      const company = prompt("Enter company name:");
+      
+      if (position && company) {
+        const newJob = {
+          id: Date.now(),
+          position,
+          company,
+          location: "Remote",
+          salary: "$100K - $140K",
+          postedDate: new Date().toISOString().split('T')[0],
+          logo: company.split(' ').map((word: string) => word[0]).join('').toUpperCase()
+        };
+        
+        const updatedJobs = [...savedJobs, newJob];
+        setSavedJobs(updatedJobs);
+        localStorage.setItem(`savedJobs_${userId}`, JSON.stringify(updatedJobs));
+        toast.success("Job saved successfully");
+      }
+    } catch (error) {
+      toast.error("Failed to add saved job");
     }
   };
 
@@ -95,7 +117,7 @@ const SavedJobsSection = ({ userId }: SavedJobsSectionProps) => {
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold text-gray-900">Saved Jobs</h2>
         <div className="flex items-center gap-2">
-          <span className="bg-blue-100 text-crossover-blue px-3 py-1 rounded-full text-sm">
+          <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">
             {savedJobs.length} Jobs
           </span>
           <Button 
@@ -119,7 +141,7 @@ const SavedJobsSection = ({ userId }: SavedJobsSectionProps) => {
                 </div>
                 <div className="flex-grow">
                   <h3 className="font-semibold text-lg">{job.position}</h3>
-                  <div className="text-crossover-blue">{job.company}</div>
+                  <div className="text-blue-600">{job.company}</div>
                   <div className="flex flex-wrap gap-x-4 mt-2 text-sm text-gray-600">
                     <span>{job.location}</span>
                     <span>{job.salary}</span>

@@ -88,11 +88,11 @@ const Dashboard = () => {
       case "profile":
         return <ProfileSection user={user} setUser={setUser} />;
       case "applications":
-        return <ApplicationsSection userId={user?.id || ""} />;
+        return <ApplicationsSection />;
       case "messages":
-        return <MessagesSection userId={user?.id || ""} />;
+        return <MessagesSection />;
       case "saved":
-        return <SavedJobsSection userId={user?.id || ""} />;
+        return <SavedJobsSection />;
       case "settings":
         return <SettingsSection onSignOut={handleSignOut} />;
       default:

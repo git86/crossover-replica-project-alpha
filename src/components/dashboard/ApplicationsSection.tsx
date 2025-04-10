@@ -7,11 +7,7 @@ import { FileText, ExternalLink, Plus } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
 
-interface ApplicationsSectionProps {
-  userId: string;
-}
-
-const ApplicationsSection = ({ userId }: ApplicationsSectionProps) => {
+const ApplicationsSection = () => {
   const [applications, setApplications] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -19,6 +15,12 @@ const ApplicationsSection = ({ userId }: ApplicationsSectionProps) => {
     // Load applications from localStorage
     const loadApplications = () => {
       try {
+        // Get current user to find their applications
+        const currentUser = localStorage.getItem("currentUser");
+        if (!currentUser) return;
+        
+        const userId = JSON.parse(currentUser).id;
+        
         const savedApplications = localStorage.getItem(`applications_${userId}`);
         if (savedApplications) {
           setApplications(JSON.parse(savedApplications));
@@ -28,7 +30,7 @@ const ApplicationsSection = ({ userId }: ApplicationsSectionProps) => {
             {
               id: 1,
               position: "Senior Frontend Developer",
-              company: "Tech Innovations Inc.",
+              company: "USS AGENCY Inc.",
               appliedDate: "2023-11-15",
               status: "In Review",
               statusColor: "bg-yellow-100 text-yellow-800"
@@ -36,7 +38,7 @@ const ApplicationsSection = ({ userId }: ApplicationsSectionProps) => {
             {
               id: 2,
               position: "Full Stack Engineer",
-              company: "Global Solutions",
+              company: "USS AGENCY Solutions",
               appliedDate: "2023-11-10",
               status: "Interview Scheduled",
               statusColor: "bg-blue-100 text-blue-800"
@@ -54,55 +56,75 @@ const ApplicationsSection = ({ userId }: ApplicationsSectionProps) => {
     };
     
     loadApplications();
-  }, [userId]);
+  }, []);
 
   const handleStatusChange = (applicationId: number) => {
-    // Simple mock of status change cycling through statuses
-    const statuses = [
-      { status: "Applied", color: "bg-gray-100 text-gray-800" },
-      { status: "In Review", color: "bg-yellow-100 text-yellow-800" },
-      { status: "Interview Scheduled", color: "bg-blue-100 text-blue-800" },
-      { status: "Accepted", color: "bg-green-100 text-green-800" },
-      { status: "Rejected", color: "bg-red-100 text-red-800" }
-    ];
-    
-    const updatedApplications = applications.map(app => {
-      if (app.id === applicationId) {
-        const currentStatusIndex = statuses.findIndex(s => s.status === app.status);
-        const nextStatusIndex = (currentStatusIndex + 1) % statuses.length;
-        return {
-          ...app,
-          status: statuses[nextStatusIndex].status,
-          statusColor: statuses[nextStatusIndex].color
-        };
-      }
-      return app;
-    });
-    
-    setApplications(updatedApplications);
-    localStorage.setItem(`applications_${userId}`, JSON.stringify(updatedApplications));
-    toast.success("Application status updated");
+    try {
+      // Get current user to find their applications
+      const currentUser = localStorage.getItem("currentUser");
+      if (!currentUser) return;
+      
+      const userId = JSON.parse(currentUser).id;
+      
+      // Simple mock of status change cycling through statuses
+      const statuses = [
+        { status: "Applied", color: "bg-gray-100 text-gray-800" },
+        { status: "In Review", color: "bg-yellow-100 text-yellow-800" },
+        { status: "Interview Scheduled", color: "bg-blue-100 text-blue-800" },
+        { status: "Accepted", color: "bg-green-100 text-green-800" },
+        { status: "Rejected", color: "bg-red-100 text-red-800" }
+      ];
+      
+      const updatedApplications = applications.map(app => {
+        if (app.id === applicationId) {
+          const currentStatusIndex = statuses.findIndex(s => s.status === app.status);
+          const nextStatusIndex = (currentStatusIndex + 1) % statuses.length;
+          return {
+            ...app,
+            status: statuses[nextStatusIndex].status,
+            statusColor: statuses[nextStatusIndex].color
+          };
+        }
+        return app;
+      });
+      
+      setApplications(updatedApplications);
+      localStorage.setItem(`applications_${userId}`, JSON.stringify(updatedApplications));
+      toast.success("Application status updated");
+    } catch (error) {
+      toast.error("Failed to update application status");
+    }
   };
 
   const handleAddApplication = () => {
-    // Simple modal for adding a mock application
-    const position = prompt("Enter job position:");
-    const company = prompt("Enter company name:");
-    
-    if (position && company) {
-      const newApplication = {
-        id: Date.now(),
-        position,
-        company,
-        appliedDate: new Date().toISOString().split('T')[0],
-        status: "Applied",
-        statusColor: "bg-gray-100 text-gray-800"
-      };
+    try {
+      // Get current user to find their applications
+      const currentUser = localStorage.getItem("currentUser");
+      if (!currentUser) return;
       
-      const updatedApplications = [...applications, newApplication];
-      setApplications(updatedApplications);
-      localStorage.setItem(`applications_${userId}`, JSON.stringify(updatedApplications));
-      toast.success("Application added successfully");
+      const userId = JSON.parse(currentUser).id;
+      
+      // Simple modal for adding a mock application
+      const position = prompt("Enter job position:");
+      const company = prompt("Enter company name:");
+      
+      if (position && company) {
+        const newApplication = {
+          id: Date.now(),
+          position,
+          company,
+          appliedDate: new Date().toISOString().split('T')[0],
+          status: "Applied",
+          statusColor: "bg-gray-100 text-gray-800"
+        };
+        
+        const updatedApplications = [...applications, newApplication];
+        setApplications(updatedApplications);
+        localStorage.setItem(`applications_${userId}`, JSON.stringify(updatedApplications));
+        toast.success("Application added successfully");
+      }
+    } catch (error) {
+      toast.error("Failed to add application");
     }
   };
 
@@ -159,13 +181,13 @@ const ApplicationsSection = ({ userId }: ApplicationsSectionProps) => {
                   <TableCell className="text-right">
                     <div className="flex justify-end space-x-2">
                       <button 
-                        className="text-gray-500 hover:text-crossover-blue"
+                        className="text-gray-500 hover:text-blue-600"
                         title="View details"
                       >
                         <FileText className="w-4 h-4" />
                       </button>
                       <button 
-                        className="text-gray-500 hover:text-crossover-blue"
+                        className="text-gray-500 hover:text-blue-600"
                         title="View job posting"
                       >
                         <ExternalLink className="w-4 h-4" />
@@ -184,11 +206,9 @@ const ApplicationsSection = ({ userId }: ApplicationsSectionProps) => {
           <p className="text-gray-500 mb-6">
             Start applying to jobs to track your application status here.
           </p>
-          <Link to="/jobs">
-            <Button>
-              Browse Jobs
-            </Button>
-          </Link>
+          <Button asChild>
+            <Link to="/jobs">Browse Jobs</Link>
+          </Button>
         </div>
       )}
     </div>

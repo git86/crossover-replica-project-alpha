@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,6 +15,36 @@ const SignIn = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+
+  // Set up a default admin account if it doesn't exist
+  useEffect(() => {
+    try {
+      const users = JSON.parse(localStorage.getItem("users") || "[]");
+      
+      // Check if admin account already exists
+      const adminExists = users.some((user: any) => user.email === "admin@ussagency.com");
+      
+      if (!adminExists) {
+        // Create default admin account
+        const adminUser = {
+          id: "admin-" + Date.now().toString(),
+          fullName: "USS AGENCY Admin",
+          email: "admin@ussagency.com",
+          password: "admin123",
+          createdAt: new Date().toISOString(),
+          profilePicture: null,
+          role: "admin"
+        };
+        
+        // Add admin to users list
+        localStorage.setItem("users", JSON.stringify([...users, adminUser]));
+        
+        console.log("Default admin account created");
+      }
+    } catch (error) {
+      console.error("Error setting up admin account:", error);
+    }
+  }, []);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -132,7 +162,7 @@ const SignIn = () => {
         <div className="container-custom max-w-md">
           <div className="bg-white p-8 rounded-lg shadow-md">
             <div className="text-center mb-8">
-              <h1 className="text-2xl font-bold mb-2 text-gray-900">Welcome Back</h1>
+              <h1 className="text-2xl font-bold mb-2 text-gray-900">Welcome to USS AGENCY</h1>
               <p className="text-gray-600">
                 Sign in to continue to your dashboard
               </p>
@@ -217,6 +247,12 @@ const SignIn = () => {
                 {isLoading ? "Signing in..." : "Sign in"}
               </Button>
             </form>
+
+            <div className="mt-4 p-4 bg-blue-50 rounded-md text-sm">
+              <p className="font-semibold text-blue-800">Admin Access:</p>
+              <p className="text-blue-600">Email: admin@ussagency.com</p>
+              <p className="text-blue-600">Password: admin123</p>
+            </div>
 
             <div className="mt-6">
               <div className="relative">
