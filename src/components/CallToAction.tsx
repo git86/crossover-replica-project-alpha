@@ -11,7 +11,7 @@ const CallToAction = () => {
             Ready to Transform Your Career or Find World-Class Talent?
           </h2>
           <p className="text-xl text-blue-100 mb-10">
-            Join thousands of professionals and companies who have already taken the next step with Crossover.
+            Join thousands of professionals and companies who have already taken the next step with USS Agency.
           </p>
           
           <div className="flex flex-col sm:flex-row justify-center gap-4 md:gap-6">

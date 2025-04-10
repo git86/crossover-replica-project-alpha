@@ -26,7 +26,7 @@ const MessagesSection = () => {
     },
     {
       id: 3,
-      with: "Crossover Team",
+      with: "USS Agency Team",
       role: "Support",
       lastMessage: "Here are some tips to help you prepare for your upcoming assessment...",
       timestamp: "Nov 10",

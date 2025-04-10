@@ -29,7 +29,7 @@ const HowItWorks = () => {
     <section className="py-20 bg-white">
       <div className="container-custom">
         <div className="text-center mb-16">
-          <h2 className="section-title">How Crossover Works</h2>
+          <h2 className="section-title">How USS Agency Works</h2>
           <p className="section-subtitle">
             We've simplified the process of finding and hiring top global talent, saving you time and resources.
           </p>

@@ -47,7 +47,7 @@ const Navbar = () => {
       <div className="container-custom flex items-center justify-between h-16">
         {/* Logo */}
         <Link to="/" className="flex items-center">
-          <span className="text-2xl font-bold text-crossover-blue">Crossover</span>
+          <span className="text-2xl font-bold text-crossover-blue">USS Agency</span>
         </Link>
 
         {/* Desktop Navigation */}
