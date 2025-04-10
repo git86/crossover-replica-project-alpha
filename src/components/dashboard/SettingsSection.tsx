@@ -4,7 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Bell, Shield, Eye, EyeOff } from "lucide-react";
 
-const SettingsSection = () => {
+interface SettingsSectionProps {
+  onSignOut: () => void;
+}
+
+const SettingsSection = ({ onSignOut }: SettingsSectionProps) => {
   const [showPassword, setShowPassword] = useState(false);
   
   // Notification preferences

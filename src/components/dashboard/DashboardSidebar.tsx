@@ -4,9 +4,10 @@ import { UserCircle, FileText, MessageSquare, Bookmark, Settings } from "lucide-
 interface DashboardSidebarProps {
   activeSection: string;
   setActiveSection: (section: string) => void;
+  onSignOut: () => void;
 }
 
-const DashboardSidebar = ({ activeSection, setActiveSection }: DashboardSidebarProps) => {
+const DashboardSidebar = ({ activeSection, setActiveSection, onSignOut }: DashboardSidebarProps) => {
   const menuItems = [
     { id: "profile", label: "My Profile", icon: <UserCircle /> },
     { id: "applications", label: "Applications", icon: <FileText /> },
