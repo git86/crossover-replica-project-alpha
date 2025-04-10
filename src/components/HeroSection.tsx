@@ -11,7 +11,7 @@ const HeroSection = () => {
           {/* Hero Content */}
           <div className="lg:w-1/2 lg:pr-12 mb-10 lg:mb-0">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-gray-900 mb-6">
-              Find Your Next Remote <span className="text-crossover-blue">Role</span> With Top Companies
+              Find Your Next Remote <span className="text-crossover-blue">Role</span> With USS AGENCY
             </h1>
             <p className="text-xl text-gray-600 mb-10">
               Join our global talent network to work with world-class teams, earn competitive salaries, and build your career from anywhere.

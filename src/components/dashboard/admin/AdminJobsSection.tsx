@@ -10,6 +10,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
 // Sample job data
@@ -19,6 +20,8 @@ const initialJobs = [
     title: "Senior Frontend Developer",
     location: "Remote",
     type: "Full-time",
+    description: "We are looking for an experienced frontend developer with React expertise to join our team. You will be responsible for building and maintaining user interfaces for our web applications.",
+    salaryRange: "$120,000 - $150,000",
     postedDate: "2025-03-20",
     applicants: 12,
     status: "Active",
@@ -28,6 +31,8 @@ const initialJobs = [
     title: "Backend Engineer",
     location: "San Francisco, CA",
     type: "Full-time",
+    description: "Join our backend team to build scalable APIs and services. Experience with Node.js and databases required.",
+    salaryRange: "$130,000 - $160,000",
     postedDate: "2025-03-15",
     applicants: 8,
     status: "Active",
@@ -37,6 +42,8 @@ const initialJobs = [
     title: "UI/UX Designer",
     location: "New York, NY",
     type: "Contract",
+    description: "Design intuitive and beautiful user interfaces for our products. Should have experience with modern design tools and user research.",
+    salaryRange: "$100,000 - $130,000",
     postedDate: "2025-03-10",
     applicants: 15,
     status: "Closed",
@@ -53,11 +60,13 @@ const AdminJobsSection = () => {
     title: "",
     location: "",
     type: "Full-time",
+    description: "",
+    salaryRange: "",
     status: "Active",
   });
 
   const handleAddJob = () => {
-    if (!newJob.title || !newJob.location) {
+    if (!newJob.title || !newJob.location || !newJob.description || !newJob.salaryRange) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -67,6 +76,8 @@ const AdminJobsSection = () => {
       title: newJob.title,
       location: newJob.location,
       type: newJob.type,
+      description: newJob.description,
+      salaryRange: newJob.salaryRange,
       postedDate: new Date().toISOString().split("T")[0],
       applicants: 0,
       status: newJob.status,
@@ -77,6 +88,8 @@ const AdminJobsSection = () => {
       title: "",
       location: "",
       type: "Full-time",
+      description: "",
+      salaryRange: "",
       status: "Active",
     });
     setIsAddingJob(false);
@@ -152,6 +165,30 @@ const AdminJobsSection = () => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
+                Salary Range*
+              </label>
+              <input
+                type="text"
+                value={newJob.salaryRange}
+                onChange={(e) => setNewJob({ ...newJob, salaryRange: e.target.value })}
+                className="w-full p-2 border border-gray-300 rounded"
+                placeholder="e.g. $100,000 - $130,000"
+              />
+            </div>
+            <div className="md:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Job Description*
+              </label>
+              <Textarea
+                value={newJob.description}
+                onChange={(e) => setNewJob({ ...newJob, description: e.target.value })}
+                className="w-full p-2 border border-gray-300 rounded"
+                placeholder="Provide a detailed description of the job responsibilities, requirements, and benefits..."
+                rows={4}
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Status
               </label>
               <select
@@ -181,6 +218,7 @@ const AdminJobsSection = () => {
               <TableHead>Job Title</TableHead>
               <TableHead>Location</TableHead>
               <TableHead>Type</TableHead>
+              <TableHead>Salary Range</TableHead>
               <TableHead>Posted Date</TableHead>
               <TableHead>Applicants</TableHead>
               <TableHead>Status</TableHead>
@@ -193,6 +231,7 @@ const AdminJobsSection = () => {
                 <TableCell className="font-medium">{job.title}</TableCell>
                 <TableCell>{job.location}</TableCell>
                 <TableCell>{job.type}</TableCell>
+                <TableCell>{job.salaryRange}</TableCell>
                 <TableCell>{job.postedDate}</TableCell>
                 <TableCell>{job.applicants}</TableCell>
                 <TableCell>

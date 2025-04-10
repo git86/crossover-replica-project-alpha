@@ -59,7 +59,7 @@ const Footer = () => {
           {/* Brand Column */}
           <div className="lg:col-span-1">
             <Link to="/" className="inline-block mb-6">
-              <span className="text-2xl font-bold text-crossover-blue">Crossover</span>
+              <span className="text-2xl font-bold text-crossover-blue">USS AGENCY</span>
             </Link>
             <p className="text-gray-600 mb-6">
               Connecting the world's top talent with the most innovative companies.
@@ -103,7 +103,7 @@ const Footer = () => {
         <div className="pt-8 border-t border-gray-200">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500 text-sm mb-4 md:mb-0">
-              © {currentYear} Crossover. All rights reserved.
+              © {currentYear} USS AGENCY. All rights reserved.
             </p>
             <div className="flex space-x-6">
               <Link to="/privacy" className="text-gray-500 text-sm hover:text-crossover-blue transition-colors">

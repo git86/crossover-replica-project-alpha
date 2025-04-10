@@ -111,7 +111,7 @@ const Dashboard = () => {
         <div className="container-custom py-8">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold text-gray-900">
-              {user?.role === "admin" ? "Admin Dashboard" : "Applicant Dashboard"}
+              {user?.role === "admin" ? "USS AGENCY Admin Dashboard" : "USS AGENCY Applicant Dashboard"}
             </h1>
             <div className="text-sm text-gray-500">
               Welcome back, <span className="font-semibold">{user?.fullName}</span>

@@ -12,7 +12,7 @@ const Jobs = () => {
           <div className="max-w-3xl mx-auto text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">Find Your Perfect Remote Job</h1>
             <p className="text-xl text-gray-600">
-              Browse through hundreds of high-paying remote positions for top talent around the world.
+              Browse through hundreds of high-paying remote positions with USS AGENCY for top talent around the world.
             </p>
           </div>
         </div>
