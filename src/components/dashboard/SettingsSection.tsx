@@ -2,7 +2,9 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Bell, Shield, Eye, EyeOff } from "lucide-react";
+import { Bell, Shield, Eye, EyeOff, LogOut } from "lucide-react";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 interface SettingsSectionProps {
   onSignOut: () => void;
@@ -10,6 +12,7 @@ interface SettingsSectionProps {
 
 const SettingsSection = ({ onSignOut }: SettingsSectionProps) => {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
   
   // Notification preferences
   const [notifications, setNotifications] = useState({
@@ -24,6 +27,24 @@ const SettingsSection = ({ onSignOut }: SettingsSectionProps) => {
       ...prev,
       [key]: !prev[key]
     }));
+  };
+
+  const handleUpdatePassword = () => {
+    // Mock implementation
+    toast.success("Password updated successfully");
+  };
+
+  const handleDeleteAccount = () => {
+    const confirmed = window.confirm("Are you sure you want to delete your account? This action cannot be undone.");
+    if (confirmed) {
+      toast.success("Account deletion requested");
+      // In a real app, we would make an API call to delete the account
+      // For now, just sign out
+      setTimeout(() => {
+        onSignOut();
+        navigate("/");
+      }, 1500);
+    }
   };
 
   return (
@@ -86,7 +107,7 @@ const SettingsSection = ({ onSignOut }: SettingsSectionProps) => {
             </div>
           </div>
           
-          <Button className="w-full sm:w-auto">
+          <Button className="w-full sm:w-auto" onClick={handleUpdatePassword}>
             Update Password
           </Button>
         </div>
@@ -166,6 +187,25 @@ const SettingsSection = ({ onSignOut }: SettingsSectionProps) => {
         </div>
       </div>
       
+      {/* Account Management */}
+      <div className="border-b pb-6">
+        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+          <LogOut className="w-5 h-5 text-crossover-blue" />
+          Account Management
+        </h3>
+        
+        <div className="space-y-4">
+          <Button 
+            variant="outline" 
+            onClick={onSignOut}
+            className="flex items-center gap-2"
+          >
+            <LogOut className="h-4 w-4" />
+            Sign Out
+          </Button>
+        </div>
+      </div>
+      
       {/* Danger Zone */}
       <div>
         <h3 className="text-lg font-semibold mb-4 text-red-600">Danger Zone</h3>
@@ -174,7 +214,7 @@ const SettingsSection = ({ onSignOut }: SettingsSectionProps) => {
           <p className="text-sm text-gray-600 mb-4">
             Once you delete your account, there is no going back. Please be certain.
           </p>
-          <Button variant="destructive">Delete My Account</Button>
+          <Button variant="destructive" onClick={handleDeleteAccount}>Delete My Account</Button>
         </div>
       </div>
     </div>

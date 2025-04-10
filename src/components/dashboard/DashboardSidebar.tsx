@@ -1,5 +1,6 @@
 
-import { UserCircle, FileText, MessageSquare, Bookmark, Settings } from "lucide-react";
+import { UserCircle, FileText, MessageSquare, Bookmark, Settings, LogOut } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface DashboardSidebarProps {
   activeSection: string;
@@ -33,6 +34,17 @@ const DashboardSidebar = ({ activeSection, setActiveSection, onSignOut }: Dashbo
             <span>{item.label}</span>
           </button>
         ))}
+        
+        <div className="pt-6 mt-6 border-t">
+          <Button 
+            variant="outline" 
+            className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50"
+            onClick={onSignOut}
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            Sign Out
+          </Button>
+        </div>
       </div>
     </div>
   );

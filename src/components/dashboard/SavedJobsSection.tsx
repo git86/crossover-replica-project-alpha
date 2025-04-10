@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Bookmark, ExternalLink, Trash2, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 interface SavedJobsSectionProps {
   userId: string;
@@ -126,9 +127,11 @@ const SavedJobsSection = ({ userId }: SavedJobsSectionProps) => {
                   </div>
                 </div>
                 <div className="flex flex-col gap-2">
-                  <Button variant="outline" size="sm" className="flex items-center gap-1">
-                    <ExternalLink className="w-4 h-4" />
-                    View
+                  <Button variant="outline" size="sm" className="flex items-center gap-1" asChild>
+                    <Link to={`/jobs/${job.id}`}>
+                      <ExternalLink className="w-4 h-4" />
+                      View
+                    </Link>
                   </Button>
                   <Button 
                     variant="outline" 
@@ -151,8 +154,8 @@ const SavedJobsSection = ({ userId }: SavedJobsSectionProps) => {
           <p className="text-gray-500 mb-6">
             You haven't saved any jobs yet. Browse jobs and click the bookmark icon to save them for later.
           </p>
-          <Button>
-            Browse Jobs
+          <Button asChild>
+            <Link to="/jobs">Browse Jobs</Link>
           </Button>
         </div>
       )}

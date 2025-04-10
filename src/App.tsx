@@ -27,6 +27,7 @@ import Terms from "./pages/Terms";
 import Contact from "./pages/Contact";
 import Cookies from "./pages/Cookies";
 import Dashboard from "./pages/Dashboard";
+import JobDetail from "./pages/JobDetail";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ const App = () => (
           <Route path="/about" element={<About />} />
           <Route path="/faq" element={<FAQ />} />
           <Route path="/jobs" element={<Jobs />} />
+          <Route path="/jobs/:id" element={<JobDetail />} />
           <Route path="/assessment" element={<Assessment />} />
           <Route path="/career-paths" element={<CareerPaths />} />
           <Route path="/talents" element={<Talents />} />

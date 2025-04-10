@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { FileText, ExternalLink, Plus } from "lucide-react";
 import { toast } from "sonner";
+import { Link } from "react-router-dom";
 
 interface ApplicationsSectionProps {
   userId: string;
@@ -183,7 +184,7 @@ const ApplicationsSection = ({ userId }: ApplicationsSectionProps) => {
           <p className="text-gray-500 mb-6">
             Start applying to jobs to track your application status here.
           </p>
-          <Button>
+          <Button as={Link} to="/jobs">
             Browse Jobs
           </Button>
         </div>
