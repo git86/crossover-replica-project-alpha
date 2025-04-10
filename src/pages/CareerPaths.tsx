@@ -3,6 +3,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, TrendingUp, Users, Award, DollarSign } from "lucide-react";
+import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 const CareerPaths = () => {
   const careerTracks = [
@@ -36,6 +38,17 @@ const CareerPaths = () => {
     }
   ];
 
+  const handleExploreOpportunities = () => {
+    window.scrollTo({
+      top: document.getElementById('career-tracks')?.offsetTop - 100,
+      behavior: 'smooth'
+    });
+  };
+
+  const handleTakeAssessment = () => {
+    toast.success("Redirecting to assessment page");
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -48,7 +61,10 @@ const CareerPaths = () => {
               <p className="text-xl mb-10 text-indigo-100">
                 Explore structured career paths that allow you to grow professionally while working remotely.
               </p>
-              <Button className="bg-white text-indigo-600 hover:bg-indigo-50">
+              <Button 
+                className="bg-white text-indigo-600 hover:bg-indigo-50"
+                onClick={handleExploreOpportunities}
+              >
                 Explore Opportunities
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -97,7 +113,7 @@ const CareerPaths = () => {
         </section>
 
         {/* Career Tracks */}
-        <section className="py-20 bg-gray-50">
+        <section id="career-tracks" className="py-20 bg-gray-50">
           <div className="container-custom">
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold mb-6 text-gray-900">Available Career Tracks</h2>
@@ -141,9 +157,11 @@ const CareerPaths = () => {
                         <h4 className="text-sm font-semibold text-gray-500 uppercase mb-1">Salary Range</h4>
                         <span className="text-lg font-bold text-green-600">{track.salaryRange}</span>
                       </div>
-                      <Button variant="outline" className="text-indigo-600 border-indigo-600 hover:bg-indigo-50">
-                        View Details
-                      </Button>
+                      <Link to={`/career-paths/${track.title.toLowerCase().replace(/\s+/g, '-')}`}>
+                        <Button variant="outline" className="text-indigo-600 border-indigo-600 hover:bg-indigo-50">
+                          View Details
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 </div>
@@ -151,10 +169,12 @@ const CareerPaths = () => {
             </div>
 
             <div className="text-center mt-12">
-              <Button className="bg-indigo-600 text-white hover:bg-indigo-700">
-                View All Career Tracks
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
+              <Link to="/career-paths/all">
+                <Button className="bg-indigo-600 text-white hover:bg-indigo-700">
+                  View All Career Tracks
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
@@ -189,12 +209,16 @@ const CareerPaths = () => {
                 Join thousands of professionals who are growing their careers with Crossover.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button className="bg-white text-indigo-600 hover:bg-indigo-50">
-                  Take Assessment
-                </Button>
-                <Button variant="outline" className="text-white border-white hover:bg-indigo-700">
-                  Browse Job Openings
-                </Button>
+                <Link to="/assessment">
+                  <Button className="bg-white text-indigo-600 hover:bg-indigo-50">
+                    Take Assessment
+                  </Button>
+                </Link>
+                <Link to="/jobs">
+                  <Button variant="outline" className="text-white border-white hover:bg-indigo-700">
+                    Browse Job Openings
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

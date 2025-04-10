@@ -90,6 +90,76 @@ const SignUp = () => {
     }, 1000);
   };
 
+  const handleGoogleSignUp = () => {
+    setIsLoading(true);
+    
+    // Mock Google authentication for signup
+    setTimeout(() => {
+      const mockGoogleUser = {
+        id: "google-" + Date.now().toString(),
+        fullName: "Google User",
+        email: "google.user@example.com",
+        createdAt: new Date().toISOString(),
+        profilePicture: null,
+        role: "applicant",
+        authProvider: "google"
+      };
+      
+      localStorage.setItem("currentUser", JSON.stringify(mockGoogleUser));
+      
+      // Add to users list if not already there
+      try {
+        const users = JSON.parse(localStorage.getItem("users") || "[]");
+        const existingUser = users.find((u: any) => u.email === mockGoogleUser.email);
+        
+        if (!existingUser) {
+          localStorage.setItem("users", JSON.stringify([...users, mockGoogleUser]));
+        }
+      } catch (error) {
+        console.error("Error updating users list:", error);
+      }
+      
+      toast.success("Account created with Google successfully!");
+      navigate("/dashboard");
+      setIsLoading(false);
+    }, 1500);
+  };
+
+  const handleGitHubSignUp = () => {
+    setIsLoading(true);
+    
+    // Mock GitHub authentication for signup
+    setTimeout(() => {
+      const mockGitHubUser = {
+        id: "github-" + Date.now().toString(),
+        fullName: "GitHub User",
+        email: "github.user@example.com",
+        createdAt: new Date().toISOString(),
+        profilePicture: null,
+        role: "applicant",
+        authProvider: "github"
+      };
+      
+      localStorage.setItem("currentUser", JSON.stringify(mockGitHubUser));
+      
+      // Add to users list if not already there
+      try {
+        const users = JSON.parse(localStorage.getItem("users") || "[]");
+        const existingUser = users.find((u: any) => u.email === mockGitHubUser.email);
+        
+        if (!existingUser) {
+          localStorage.setItem("users", JSON.stringify([...users, mockGitHubUser]));
+        }
+      } catch (error) {
+        console.error("Error updating users list:", error);
+      }
+      
+      toast.success("Account created with GitHub successfully!");
+      navigate("/dashboard");
+      setIsLoading(false);
+    }, 1500);
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -216,7 +286,12 @@ const SignUp = () => {
               </div>
 
               <div className="mt-6 grid grid-cols-2 gap-3">
-                <Button variant="outline" className="w-full">
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={handleGoogleSignUp}
+                  disabled={isLoading}
+                >
                   <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
                     <path
                       fill="currentColor"
@@ -237,7 +312,12 @@ const SignUp = () => {
                   </svg>
                   Google
                 </Button>
-                <Button variant="outline" className="w-full">
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={handleGitHubSignUp}
+                  disabled={isLoading}
+                >
                   <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                     <path
                       fillRule="evenodd"

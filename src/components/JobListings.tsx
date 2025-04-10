@@ -2,9 +2,11 @@
 import { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Search, Filter, MapPin, DollarSign, Clock, ArrowRight } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const JobListings = () => {
   const [activeFilter, setActiveFilter] = useState('all');
+  const navigate = useNavigate();
 
   const categories = [
     { id: 'all', name: 'All Jobs' },
@@ -94,6 +96,10 @@ const JobListings = () => {
     ? jobs 
     : jobs.filter(job => job.category === activeFilter);
 
+  const handleViewDetails = (jobId: number) => {
+    navigate(`/jobs/${jobId}`);
+  };
+
   return (
     <section className="py-20 bg-white">
       <div className="container-custom">
@@ -181,7 +187,10 @@ const JobListings = () => {
               
               <p className="text-gray-600 text-sm mb-4">{job.description}</p>
               
-              <Button className="w-full group-hover:bg-crossover-blue group-hover:text-white border border-crossover-blue text-crossover-blue bg-white">
+              <Button 
+                className="w-full group-hover:bg-crossover-blue group-hover:text-white border border-crossover-blue text-crossover-blue bg-white"
+                onClick={() => handleViewDetails(job.id)}
+              >
                 View Details
               </Button>
             </div>
@@ -190,10 +199,12 @@ const JobListings = () => {
 
         {/* View All Button */}
         <div className="mt-12 text-center">
-          <Button className="btn-primary inline-flex items-center">
-            View All Jobs
-            <ArrowRight className="ml-2 h-5 w-5" />
-          </Button>
+          <Link to="/jobs">
+            <Button className="btn-primary inline-flex items-center">
+              View All Jobs
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

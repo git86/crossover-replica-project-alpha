@@ -4,8 +4,16 @@ import Footer from "@/components/Footer";
 import AssessmentProcess from "@/components/AssessmentProcess";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle } from "lucide-react";
+import { Link } from "react-router-dom";
+import { toast } from "sonner";
 
 const Assessment = () => {
+  const handleStartAssessment = () => {
+    // In a real application, this would likely redirect to an assessment platform
+    // For now, we'll simply show a toast notification
+    toast.success("Assessment process started. You will be redirected to the assessment platform.");
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />
@@ -18,7 +26,10 @@ const Assessment = () => {
               <p className="text-xl mb-10 text-blue-100">
                 We&apos;ve developed a rigorous, data-driven process to identify the top 1% of global talent.
               </p>
-              <Button className="bg-white text-blue-600 hover:bg-blue-50">
+              <Button 
+                className="bg-white text-blue-600 hover:bg-blue-50"
+                onClick={handleStartAssessment}
+              >
                 Start Your Assessment
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
@@ -87,7 +98,10 @@ const Assessment = () => {
               <p className="text-gray-600 mb-8">
                 Join thousands of professionals who have advanced their careers through our assessment process.
               </p>
-              <Button className="bg-crossover-blue text-white hover:bg-blue-700">
+              <Button 
+                className="bg-crossover-blue text-white hover:bg-blue-700"
+                onClick={handleStartAssessment}
+              >
                 Begin Assessment
               </Button>
             </div>

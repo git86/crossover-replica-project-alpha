@@ -11,6 +11,8 @@ import NotFound from "./pages/NotFound";
 import Jobs from "./pages/Jobs";
 import Assessment from "./pages/Assessment";
 import CareerPaths from "./pages/CareerPaths";
+import CareerPathsAll from "./pages/CareerPathsAll";
+import CareerPathDetail from "./pages/CareerPathDetail";
 import Talents from "./pages/Talents";
 import HowItWorksHiring from "./pages/HowItWorksHiring";
 import Enterprise from "./pages/Enterprise";
@@ -45,6 +47,8 @@ const App = () => (
           <Route path="/jobs/:id" element={<JobDetail />} />
           <Route path="/assessment" element={<Assessment />} />
           <Route path="/career-paths" element={<CareerPaths />} />
+          <Route path="/career-paths/all" element={<CareerPathsAll />} />
+          <Route path="/career-paths/:pathId" element={<CareerPathDetail />} />
           <Route path="/talents" element={<Talents />} />
           <Route path="/how-it-works" element={<HowItWorksHiring />} />
           <Route path="/enterprise" element={<Enterprise />} />

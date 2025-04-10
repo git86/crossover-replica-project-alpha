@@ -11,10 +11,19 @@ import SavedJobsSection from "@/components/dashboard/SavedJobsSection";
 import SettingsSection from "@/components/dashboard/SettingsSection";
 import { toast } from "sonner";
 
+interface User {
+  id: string;
+  fullName: string;
+  email: string;
+  profilePicture: string | null;
+  role: string;
+  [key: string]: any; // Allow for additional properties
+}
+
 const Dashboard = () => {
   const [activeSection, setActiveSection] = useState("profile");
   const [isLoading, setIsLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
