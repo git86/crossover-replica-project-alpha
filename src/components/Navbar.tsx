@@ -1,12 +1,19 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown, User } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Check if user is logged in
+    const userLoggedIn = localStorage.getItem("isLoggedIn") === "true" || localStorage.getItem("currentUser") !== null;
+    setIsLoggedIn(userLoggedIn);
+  }, []);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -91,12 +98,21 @@ const Navbar = () => {
 
         {/* CTA Buttons */}
         <div className="hidden md:flex items-center space-x-4">
-          <Link to="/sign-in" className="text-gray-700 hover:text-crossover-blue">
-            Sign In
-          </Link>
-          <Button className="btn-primary">
-            Get Started
-          </Button>
+          {isLoggedIn ? (
+            <Link to="/dashboard" className="flex items-center text-gray-700 hover:text-crossover-blue">
+              <User size={18} className="mr-1" />
+              Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link to="/sign-in" className="text-gray-700 hover:text-crossover-blue">
+                Sign In
+              </Link>
+              <Button className="btn-primary">
+                <Link to="/sign-up">Get Started</Link>
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Mobile Navigation Toggle */}
@@ -152,19 +168,32 @@ const Navbar = () => {
               </div>
             ))}
             <div className="pt-4 flex flex-col space-y-3">
-              <Link 
-                to="/sign-in" 
-                className="text-gray-700 hover:text-crossover-blue"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Sign In
-              </Link>
-              <Button 
-                className="btn-primary w-full"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Get Started
-              </Button>
+              {isLoggedIn ? (
+                <Link 
+                  to="/dashboard" 
+                  className="flex items-center text-gray-700 hover:text-crossover-blue"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <User size={18} className="mr-1" />
+                  Dashboard
+                </Link>
+              ) : (
+                <>
+                  <Link 
+                    to="/sign-in" 
+                    className="text-gray-700 hover:text-crossover-blue"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    Sign In
+                  </Link>
+                  <Button 
+                    className="btn-primary w-full"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <Link to="/sign-up" className="w-full block">Get Started</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
