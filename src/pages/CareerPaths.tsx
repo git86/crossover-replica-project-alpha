@@ -76,7 +76,7 @@ const CareerPaths = () => {
         <section className="py-16 bg-white">
           <div className="container-custom">
             <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold mb-6 text-gray-900">Why Choose a Crossover Career Path?</h2>
+              <h2 className="text-3xl font-bold mb-6 text-gray-900">Why Choose USS Agency Career Path?</h2>
               <p className="text-gray-600 max-w-3xl mx-auto">
                 Our structured career paths offer clear progression, competitive compensation, and the freedom of remote work.
               </p>

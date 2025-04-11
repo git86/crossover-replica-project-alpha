@@ -88,7 +88,7 @@ const Blog = () => {
           <div className="container-custom">
             <div className="max-w-3xl mx-auto">
               <div className="text-center mb-8">
-                <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">The Crossover Blog</h1>
+                <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">The USS Agency Blog</h1>
                 <p className="text-xl text-gray-600">
                   Insights, strategies, and best practices for building and managing high-performance remote teams.
                 </p>

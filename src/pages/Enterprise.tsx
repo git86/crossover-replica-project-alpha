@@ -54,7 +54,7 @@ const Enterprise = () => {
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold mb-6 text-gray-900">Enterprise Challenges We Solve</h2>
               <p className="text-gray-600 max-w-3xl mx-auto">
-                Common workforce challenges faced by enterprise organizations and how Crossover addresses them.
+                Common workforce challenges faced by enterprise organizations and how USS Agency addresses them.
               </p>
             </div>
 
@@ -89,7 +89,7 @@ const Enterprise = () => {
                     <p className="text-gray-700">{challenge.problem}</p>
                   </div>
                   <div className="p-3 bg-green-50 rounded-md">
-                    <p className="text-sm font-medium text-green-800">Crossover Solution:</p>
+                    <p className="text-sm font-medium text-green-800">USS Agency Solution:</p>
                     <p className="text-gray-700">{challenge.solution}</p>
                   </div>
                 </div>
@@ -201,7 +201,7 @@ const Enterprise = () => {
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold mb-6 text-gray-900">Success Stories</h2>
               <p className="text-gray-600 max-w-3xl mx-auto">
-                See how enterprises have transformed their workforce with Crossover.
+                See how enterprises have transformed their workforce with USS Agency.
               </p>
             </div>
 
@@ -218,7 +218,7 @@ const Enterprise = () => {
                   </div>
                   <h3 className="text-2xl font-bold mb-4 text-gray-900">How TechGiant Scaled Their Development Team by 300%</h3>
                   <p className="text-gray-600 mb-6">
-                    TechGiant needed to rapidly expand their development capabilities while maintaining quality. Using Crossover's enterprise solutions, they were able to onboard 150 high-performing engineers in just 3 months, achieving project milestones ahead of schedule.
+                    TechGiant needed to rapidly expand their development capabilities while maintaining quality. Using USS Agency's enterprise solutions, they were able to onboard 150 high-performing engineers in just 3 months, achieving project milestones ahead of schedule.
                   </p>
                   <div className="grid grid-cols-2 gap-4 mb-6">
                     <div className="p-4 bg-gray-50 rounded-lg">

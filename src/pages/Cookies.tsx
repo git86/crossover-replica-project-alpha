@@ -25,7 +25,7 @@ const Cookies = () => {
                 Cookies are small data files that are placed on your computer or mobile device when you visit a website. Cookies are widely used by website owners to make their websites work, or to work more efficiently, as well as to provide reporting information.
               </p>
               <p>
-                Cookies set by the website owner (in this case, Crossover) are called "first-party cookies". Cookies set by parties other than the website owner are called "third-party cookies". Third-party cookies enable third-party features or functionality to be provided on or through the website (e.g., advertising, interactive content, and analytics).
+                Cookies set by the website owner (in this case, USS Agency) are called "first-party cookies". Cookies set by parties other than the website owner are called "third-party cookies". Third-party cookies enable third-party features or functionality to be provided on or through the website (e.g., advertising, interactive content, and analytics).
               </p>
 
               <h2 className="text-2xl font-semibold mt-10 mb-4">3. Why Do We Use Cookies?</h2>
@@ -73,7 +73,7 @@ const Cookies = () => {
 
               <h2 className="text-2xl font-semibold mt-10 mb-4">7. Contact Us</h2>
               <p>
-                If you have any questions about our use of cookies or other technologies, please email us at privacy@crossover.com or contact us at:
+                If you have any questions about our use of cookies or other technologies, please email us at privacy@ussagency.com or contact us at:
               </p>
               <p className="mb-4">
                 100 Innovation Drive<br />
