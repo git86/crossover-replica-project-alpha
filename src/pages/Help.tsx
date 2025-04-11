@@ -6,8 +6,22 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { useNavigate } from "react-router-dom";
+import { toast } from "@/components/ui/use-toast";
 
 const Help = () => {
+  const navigate = useNavigate();
+  const [isTicketDialogOpen, setIsTicketDialogOpen] = useState(false);
+  const [isCallDialogOpen, setIsCallDialogOpen] = useState(false);
+  const [ticketSubject, setTicketSubject] = useState("");
+  const [ticketMessage, setTicketMessage] = useState("");
+  const [callDate, setCallDate] = useState("");
+  const [callTime, setCallTime] = useState("");
+  const [callReason, setCallReason] = useState("");
+
   const faqCategories = [
     {
       category: "For Talents",
@@ -52,6 +66,33 @@ const Help = () => {
       ]
     }
   ];
+
+  const handleSubmitTicket = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Here you would normally send data to the server
+    toast({
+      title: "Ticket Submitted",
+      description: "Your support ticket has been submitted. We'll respond within 24 hours.",
+    });
+    setIsTicketDialogOpen(false);
+    setTicketSubject("");
+    setTicketMessage("");
+    navigate("/contact", { state: { ticketSubmitted: true } });
+  };
+
+  const handleBookCall = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Here you would normally send data to the server
+    toast({
+      title: "Call Scheduled",
+      description: `Your call has been scheduled for ${callDate} at ${callTime}.`,
+    });
+    setIsCallDialogOpen(false);
+    setCallDate("");
+    setCallTime("");
+    setCallReason("");
+    navigate("/contact", { state: { callBooked: true } });
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -125,8 +166,11 @@ const Help = () => {
                 <p className="text-gray-600 mb-6">
                   Submit a ticket and our team will get back to you within 24 hours.
                 </p>
-                <Button className="w-full bg-crossover-blue hover:bg-blue-700">
-                  <Link to="/contact">Submit a Ticket</Link>
+                <Button 
+                  className="w-full bg-crossover-blue hover:bg-blue-700"
+                  onClick={() => setIsTicketDialogOpen(true)}
+                >
+                  Submit a Ticket
                 </Button>
               </div>
               <div className="bg-white rounded-lg p-8 shadow-sm">
@@ -134,8 +178,11 @@ const Help = () => {
                 <p className="text-gray-600 mb-6">
                   Book a call with our support team for personalized assistance.
                 </p>
-                <Button className="w-full bg-crossover-blue hover:bg-blue-700">
-                  <Link to="/contact">Book a Call</Link>
+                <Button 
+                  className="w-full bg-crossover-blue hover:bg-blue-700"
+                  onClick={() => setIsCallDialogOpen(true)}
+                >
+                  Book a Call
                 </Button>
               </div>
             </div>
@@ -143,6 +190,103 @@ const Help = () => {
         </section>
       </main>
       <Footer />
+
+      {/* Submit Ticket Dialog */}
+      <Dialog open={isTicketDialogOpen} onOpenChange={setIsTicketDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Submit a Support Ticket</DialogTitle>
+            <DialogDescription>
+              Please provide details about your issue and we'll get back to you within 24 hours.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleSubmitTicket} className="space-y-4 mt-4">
+            <div className="space-y-2">
+              <label htmlFor="subject" className="text-sm font-medium">Subject</label>
+              <Input 
+                id="subject" 
+                value={ticketSubject} 
+                onChange={(e) => setTicketSubject(e.target.value)} 
+                placeholder="Brief description of your issue" 
+                required 
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="message" className="text-sm font-medium">Message</label>
+              <Textarea 
+                id="message" 
+                value={ticketMessage} 
+                onChange={(e) => setTicketMessage(e.target.value)} 
+                placeholder="Please provide details about your issue" 
+                rows={5} 
+                required 
+              />
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setIsTicketDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-crossover-blue hover:bg-blue-700">
+                Submit Ticket
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Book Call Dialog */}
+      <Dialog open={isCallDialogOpen} onOpenChange={setIsCallDialogOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Schedule a Support Call</DialogTitle>
+            <DialogDescription>
+              Select a date and time for your call with our support team.
+            </DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handleBookCall} className="space-y-4 mt-4">
+            <div className="space-y-2">
+              <label htmlFor="date" className="text-sm font-medium">Preferred Date</label>
+              <Input 
+                id="date" 
+                type="date" 
+                value={callDate} 
+                onChange={(e) => setCallDate(e.target.value)} 
+                required 
+                min={new Date().toISOString().split('T')[0]}
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="time" className="text-sm font-medium">Preferred Time</label>
+              <Input 
+                id="time" 
+                type="time" 
+                value={callTime} 
+                onChange={(e) => setCallTime(e.target.value)} 
+                required 
+              />
+            </div>
+            <div className="space-y-2">
+              <label htmlFor="reason" className="text-sm font-medium">Reason for Call</label>
+              <Textarea 
+                id="reason" 
+                value={callReason} 
+                onChange={(e) => setCallReason(e.target.value)} 
+                placeholder="Please briefly describe what you'd like to discuss" 
+                rows={3} 
+                required 
+              />
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setIsCallDialogOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" className="bg-crossover-blue hover:bg-blue-700">
+                Book Call
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
