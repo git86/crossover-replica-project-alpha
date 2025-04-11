@@ -186,7 +186,7 @@ const CareerPaths = () => {
               <div className="text-5xl text-indigo-200 absolute top-4 left-4">"</div>
               <div className="relative z-10">
                 <p className="text-lg md:text-xl text-gray-700 mb-6 italic">
-                  Joining Crossover completely transformed my career trajectory. I started as a mid-level developer and within 3 years, I advanced to an architect role with a 150% salary increase. The structured career path and feedback made all the difference.
+                  Joining USS Agency completely transformed my career trajectory. I started as a mid-level developer and within 3 years, I advanced to an architect role with a 150% salary increase. The structured career path and feedback made all the difference.
                 </p>
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-gray-300 rounded-full mr-4"></div>
@@ -206,7 +206,7 @@ const CareerPaths = () => {
             <div className="max-w-3xl mx-auto text-center">
               <h2 className="text-3xl font-bold mb-6">Ready to Accelerate Your Career?</h2>
               <p className="text-xl text-indigo-100 mb-8">
-                Join thousands of professionals who are growing their careers with Crossover.
+                Join thousands of professionals who are growing their careers with USS Agency.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link to="/assessment">

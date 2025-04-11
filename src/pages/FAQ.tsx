@@ -20,25 +20,25 @@ const FAQ = () => {
   const faqs = {
     general: [
       {
-        question: "What is Crossover?",
-        answer: "Crossover is a global talent platform that connects the world's top talent with the most innovative companies. We specialize in remote work opportunities across various domains including software development, product management, marketing, design, and finance."
+        question: "What is USS Agency?",
+        answer: "USS Agency is a global talent platform that connects the world's top talent with the most innovative companies. We specialize in remote work opportunities across various domains including software development, product management, marketing, design, and finance."
       },
       {
-        question: "How does Crossover work?",
-        answer: "Crossover uses a rigorous, data-driven assessment process to identify the top 1% of global talent. Candidates go through an application review, technical assessment, and trial period before being hired. Companies can access this pre-vetted talent pool to quickly scale their teams with high-quality remote professionals."
+        question: "How does USS Agency work?",
+        answer: "USS Agency uses a rigorous, data-driven assessment process to identify the top 1% of global talent. Candidates go through an application review, technical assessment, and trial period before being hired. Companies can access this pre-vetted talent pool to quickly scale their teams with high-quality remote professionals."
       },
       {
-        question: "Where is Crossover located?",
-        answer: "Crossover is a global company with offices in multiple countries, but our primary operations are conducted remotely. Our talent pool and client companies span over 100 countries worldwide."
+        question: "Where is USS Agency located?",
+        answer: "USS Agency is a global company with offices in multiple countries, but our primary operations are conducted remotely. Our talent pool and client companies span over 100 countries worldwide."
       },
       {
-        question: "Does Crossover offer full-time positions?",
-        answer: "Yes, the majority of positions offered through Crossover are full-time, long-term roles. We also occasionally offer project-based or part-time opportunities depending on client needs."
+        question: "Does USS Agency offer full-time positions?",
+        answer: "Yes, the majority of positions offered through USS Agency are full-time, long-term roles. We also occasionally offer project-based or part-time opportunities depending on client needs."
       }
     ],
     candidates: [
       {
-        question: "How do I apply for jobs through Crossover?",
+        question: "How do I apply for jobs through USS Agency?",
         answer: "Visit our jobs page, browse available positions that match your skills, and click 'Apply' on positions that interest you. You'll need to create a profile, submit your application, and go through our assessment process."
       },
       {
@@ -50,32 +50,32 @@ const FAQ = () => {
         answer: "The hiring process typically takes 1-3 weeks from application to offer, depending on the position and how quickly you complete the assessment stages."
       },
       {
-        question: "What types of roles does Crossover offer?",
-        answer: "Crossover offers roles across various domains including software development, product management, design, marketing, finance, customer support, and more. All positions are remote, allowing you to work from anywhere."
+        question: "What types of roles does USS Agency offer?",
+        answer: "USS Agency offers roles across various domains including software development, product management, design, marketing, finance, customer support, and more. All positions are remote, allowing you to work from anywhere."
       }
     ],
     companies: [
       {
-        question: "How does Crossover help companies hire talent?",
-        answer: "Crossover provides access to a global pool of pre-vetted, high-performing talent. We handle the entire recruitment process including sourcing, screening, assessment, and ongoing performance monitoring, significantly reducing your hiring time and costs."
+        question: "How does USS Agency help companies hire talent?",
+        answer: "USS Agency provides access to a global pool of pre-vetted, high-performing talent. We handle the entire recruitment process including sourcing, screening, assessment, and ongoing performance monitoring, significantly reducing your hiring time and costs."
       },
       {
-        question: "What kind of talent can I hire through Crossover?",
+        question: "What kind of talent can I hire through USS Agency?",
         answer: "You can hire a wide range of professionals including software developers, product managers, designers, marketers, finance specialists, customer support representatives, and more. All our talent has been rigorously assessed to ensure they meet the highest standards."
       },
       {
-        question: "How quickly can I scale my team with Crossover?",
+        question: "How quickly can I scale my team with USS Agency?",
         answer: "Most companies can start interviewing pre-vetted candidates within days of signing up, and many positions can be filled within 1-2 weeks. Our large bench of ready-to-work talent makes scaling fast and efficient."
       },
       {
-        question: "Does Crossover offer any guarantees on hired talent?",
+        question: "Does USS Agency offer any guarantees on hired talent?",
         answer: "Yes, we offer a performance guarantee for all placements. If a hired professional doesn't meet your expectations, we'll replace them at no additional cost within a specified timeframe."
       }
     ],
     payment: [
       {
         question: "How does payment work for hired talent?",
-        answer: "Professionals hired through Crossover are typically paid weekly based on tracked productive time. All payments are processed through our secure platform."
+        answer: "Professionals hired through USS Agency are typically paid weekly based on tracked productive time. All payments are processed through our secure platform."
       },
       {
         question: "What payment methods are accepted?",
@@ -83,7 +83,7 @@ const FAQ = () => {
       },
       {
         question: "Are there any additional fees beyond the stated rates?",
-        answer: "Crossover's fees are transparent and included in the rates you see. There are no hidden charges or additional fees."
+        answer: "USS Agency's fees are transparent and included in the rates you see. There are no hidden charges or additional fees."
       },
       {
         question: "How does billing work for companies?",
@@ -92,19 +92,19 @@ const FAQ = () => {
     ],
     technical: [
       {
-        question: "What technical requirements do I need to work through Crossover?",
+        question: "What technical requirements do I need to work through USS Agency?",
         answer: "You'll need a reliable internet connection, a modern computer with webcam, and any specific software required for your role. Crossover provides access to additional tools needed for tracking time and managing work."
       },
       {
-        question: "How does Crossover track working hours?",
-        answer: "Crossover uses a proprietary productivity tracking tool that monitors active work time. This ensures transparency for both talent and clients."
+        question: "How does USS Agency track working hours?",
+        answer: "USS Agency uses a proprietary productivity tracking tool that monitors active work time. This ensures transparency for both talent and clients."
       },
       {
-        question: "Is my data secure with Crossover?",
-        answer: "Yes, Crossover takes data security seriously and implements industry-standard security measures to protect all personal and business information."
+        question: "Is my data secure with USS Agency?",
+        answer: "Yes, USS Agency takes data security seriously and implements industry-standard security measures to protect all personal and business information."
       },
       {
-        question: "What kind of technical support does Crossover provide?",
+        question: "What kind of technical support does USS Agency provide?",
         answer: "We offer technical support through our help center, email support, and live chat during business hours to resolve any issues quickly."
       }
     ]
@@ -119,7 +119,7 @@ const FAQ = () => {
             <div className="max-w-3xl mx-auto text-center mb-8">
               <h1 className="text-4xl font-bold mb-6 text-gray-900">Frequently Asked Questions</h1>
               <p className="text-xl text-gray-600">
-                Find answers to common questions about Crossover
+                Find answers to common questions about USS Agency
               </p>
             </div>
 

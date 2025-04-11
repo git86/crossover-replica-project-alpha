@@ -17,12 +17,12 @@ const Terms = () => {
 
               <h2 className="text-2xl font-semibold mt-10 mb-4">1. Acceptance of Terms</h2>
               <p>
-                By accessing or using Crossover's website, platform, or services, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services.
+                By accessing or using USS Agency's website, platform, or services, you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use our services.
               </p>
 
               <h2 className="text-2xl font-semibold mt-10 mb-4">2. Service Description</h2>
               <p>
-                Crossover provides a platform that connects companies with remote professionals around the world. Our services include talent assessment, matching, placement, and management tools.
+              USS Agency provides a platform that connects companies with remote professionals around the world. Our services include talent assessment, matching, placement, and management tools.
               </p>
 
               <h2 className="text-2xl font-semibold mt-10 mb-4">3. User Accounts</h2>
@@ -49,7 +49,7 @@ const Terms = () => {
 
               <h2 className="text-2xl font-semibold mt-10 mb-4">5. Intellectual Property</h2>
               <p>
-                Our website, platform, and services, including all content, features, and functionality, are owned by Crossover and are protected by copyright, trademark, and other intellectual property laws.
+                Our website, platform, and services, including all content, features, and functionality, are owned by USS Agency and are protected by copyright, trademark, and other intellectual property laws.
               </p>
               <p>
                 You may not reproduce, distribute, modify, create derivative works of, publicly display, publicly perform, republish, download, store, or transmit any of our materials without our express written consent.
@@ -65,17 +65,17 @@ const Terms = () => {
 
               <h2 className="text-2xl font-semibold mt-10 mb-4">7. Disclaimer of Warranties</h2>
               <p>
-                Our services are provided on an "as is" and "as available" basis. Crossover makes no warranties, expressed or implied, regarding the operation or availability of the services.
+                Our services are provided on an "as is" and "as available" basis. USS Agency makes no warranties, expressed or implied, regarding the operation or availability of the services.
               </p>
 
               <h2 className="text-2xl font-semibold mt-10 mb-4">8. Limitation of Liability</h2>
               <p>
-                To the maximum extent permitted by law, Crossover shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of or inability to use the services.
+                To the maximum extent permitted by law, USS Agency shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of or inability to use the services.
               </p>
 
               <h2 className="text-2xl font-semibold mt-10 mb-4">9. Indemnification</h2>
               <p>
-                You agree to indemnify and hold harmless Crossover and its officers, directors, employees, and agents from any claims, liabilities, damages, losses, and expenses arising out of or in any way connected with your use of our services or violation of these terms.
+                You agree to indemnify and hold harmless USS Agency and its officers, directors, employees, and agents from any claims, liabilities, damages, losses, and expenses arising out of or in any way connected with your use of our services or violation of these terms.
               </p>
 
               <h2 className="text-2xl font-semibold mt-10 mb-4">10. Governing Law</h2>
@@ -93,7 +93,7 @@ const Terms = () => {
                 If you have any questions about these Terms, please contact us at:
               </p>
               <p className="mb-4">
-                Email: legal@crossover.com<br />
+                Email: legal@ussagency.com<br />
                 Address: 100 Innovation Drive, Tech City, CA 94000, USA<br />
                 Phone: +1 (555) 123-4567
               </p>

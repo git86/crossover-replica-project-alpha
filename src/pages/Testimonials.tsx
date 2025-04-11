@@ -9,7 +9,7 @@ const Testimonials = () => {
       name: "Sarah Johnson",
       position: "CTO at TechInnovate",
       company: "TechInnovate",
-      quote: "Working with Crossover completely transformed our development process. The talent we've hired has been exceptional, delivering high-quality work consistently.",
+      quote: "Working with USS Agency completely transformed our development process. The talent we've hired has been exceptional, delivering high-quality work consistently.",
       rating: 5,
       image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80"
     },
@@ -17,7 +17,7 @@ const Testimonials = () => {
       name: "Michael Chen",
       position: "Founder & CEO",
       company: "GrowthFirst",
-      quote: "The quality of talent available through Crossover is unmatched. We've been able to scale our team rapidly with exceptionally skilled professionals.",
+      quote: "The quality of talent available through USS Agency is unmatched. We've been able to scale our team rapidly with exceptionally skilled professionals.",
       rating: 5,
       image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80"
     },
@@ -25,7 +25,7 @@ const Testimonials = () => {
       name: "Elena Rodriguez",
       position: "Product Director",
       company: "SaaS Solutions",
-      quote: "What impressed me most was how quickly we were able to find and onboard qualified candidates. The rigorous vetting process Crossover employs really shows in the quality of talent.",
+      quote: "What impressed me most was how quickly we were able to find and onboard qualified candidates. The rigorous vetting process USS Agency employs really shows in the quality of talent.",
       rating: 5,
       image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=776&q=80"
     },
@@ -33,7 +33,7 @@ const Testimonials = () => {
       name: "David Park",
       position: "Engineering Manager",
       company: "DataVision",
-      quote: "The remote professionals we hired through Crossover integrated seamlessly with our team. Their technical skills and communication have been outstanding.",
+      quote: "The remote professionals we hired through USS Agency integrated seamlessly with our team. Their technical skills and communication have been outstanding.",
       rating: 4,
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80"
     },
@@ -41,7 +41,7 @@ const Testimonials = () => {
       name: "Laura Martinez",
       position: "COO",
       company: "Global Enterprises",
-      quote: "Crossover has been a game-changer for our organization. We've been able to access top talent from around the world, driving innovation and growth.",
+      quote: "USS Agency has been a game-changer for our organization. We've been able to access top talent from around the world, driving innovation and growth.",
       rating: 5,
       image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1061&q=80"
     },
@@ -49,7 +49,7 @@ const Testimonials = () => {
       name: "James Wilson",
       position: "Startup Founder",
       company: "NextGen Tech",
-      quote: "As a startup, finding affordable top-tier talent was challenging until we discovered Crossover. Their talent pool is exceptional and the hiring process is straightforward.",
+      quote: "As a startup, finding affordable top-tier talent was challenging until we discovered USS Agency. Their talent pool is exceptional and the hiring process is straightforward.",
       rating: 5,
       image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=774&q=80"
     }
@@ -65,7 +65,7 @@ const Testimonials = () => {
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">Client Testimonials</h1>
               <p className="text-xl text-gray-600 mb-6">
-                Hear from businesses that have transformed their teams with Crossover talent.
+                Hear from businesses that have transformed their teams with USS Agency talent.
               </p>
             </div>
           </div>

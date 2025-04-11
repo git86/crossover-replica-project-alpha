@@ -10,7 +10,7 @@ const SuccessStories = () => {
       title: "How TechSolutions Scaled Their Development Team",
       category: "Enterprise",
       image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      summary: "TechSolutions needed to double their engineering capacity within 3 months. Using Crossover, they onboarded 25 senior developers who seamlessly integrated with their existing teams.",
+      summary: "TechSolutions needed to double their engineering capacity within 3 months. Using USS Agency, they onboarded 25 senior developers who seamlessly integrated with their existing teams.",
       results: [
         "Reduced time-to-hire by 70%",
         "Saved $1.2M in recruitment costs",
@@ -21,7 +21,7 @@ const SuccessStories = () => {
       title: "FinanceApp's Journey to 24/7 Customer Support",
       category: "Customer Service",
       image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      summary: "FinanceApp wanted to provide round-the-clock support without the complexity of managing global offices. Crossover built them a distributed customer service team across multiple time zones.",
+      summary: "FinanceApp wanted to provide round-the-clock support without the complexity of managing global offices. USS Agency built them a distributed customer service team across multiple time zones.",
       results: [
         "Achieved 24/7 coverage with just 12 team members",
         "Improved customer satisfaction by 35%",
@@ -32,7 +32,7 @@ const SuccessStories = () => {
       title: "MarketingPro's Remote Design Team Success",
       category: "Creative",
       image: "https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      summary: "MarketingPro struggled to find quality designers locally. With Crossover, they built a remote creative team that revolutionized their brand and marketing materials.",
+      summary: "MarketingPro struggled to find quality designers locally. With USS Agency, they built a remote creative team that revolutionized their brand and marketing materials.",
       results: [
         "Increased design output by 200%",
         "Expanded capabilities to include motion design and 3D",
@@ -43,19 +43,19 @@ const SuccessStories = () => {
 
   const testimonials = [
     {
-      quote: "Working with Crossover has transformed our business. We now have access to talent we simply couldn't find locally, and the quality has exceeded our expectations.",
+      quote: "Working with USS Agency has transformed our business. We now have access to talent we simply couldn't find locally, and the quality has exceeded our expectations.",
       author: "Sarah Johnson",
       position: "CTO, TechSolutions",
       image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
     },
     {
-      quote: "The caliber of professionals we've hired through Crossover is outstanding. They integrate seamlessly with our teams and consistently deliver high-quality work.",
+      quote: "The caliber of professionals we've hired through USS Agency is outstanding. They integrate seamlessly with our teams and consistently deliver high-quality work.",
       author: "Michael Chen",
       position: "VP of Engineering, DataStream",
       image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
     },
     {
-      quote: "Crossover's talent assessment process is truly rigorous. Every professional we've hired has been pre-vetted and ready to contribute from day one.",
+      quote: "USS Agency's talent assessment process is truly rigorous. Every professional we've hired has been pre-vetted and ready to contribute from day one.",
       author: "Elena Rodriguez",
       position: "Director of HR, GlobalFinance",
       image: "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80"
@@ -72,7 +72,7 @@ const SuccessStories = () => {
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-6">Success Stories</h1>
               <p className="text-xl mb-10 text-indigo-100">
-                See how companies have transformed their workforce and achieved their goals with Crossover's talent solutions.
+                See how companies have transformed their workforce and achieved their goals with USS Agency's talent solutions.
               </p>
               <Button className="bg-white text-indigo-700 hover:bg-indigo-50">
                 View Case Studies
@@ -88,7 +88,7 @@ const SuccessStories = () => {
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold mb-6 text-gray-900">Featured Success Stories</h2>
               <p className="text-gray-600 max-w-3xl mx-auto">
-                Real results from companies that have partnered with Crossover to build their remote teams.
+                Real results from companies that have partnered with USS Agency to build their remote teams.
               </p>
             </div>
 
@@ -144,7 +144,7 @@ const SuccessStories = () => {
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold mb-6 text-gray-900">What Our Clients Say</h2>
               <p className="text-gray-600 max-w-3xl mx-auto">
-                Hear directly from the companies that have built successful remote teams with Crossover.
+                Hear directly from the companies that have built successful remote teams with USS Agency.
               </p>
             </div>
 
@@ -178,7 +178,7 @@ const SuccessStories = () => {
             <div className="text-center mb-16">
               <h2 className="text-3xl font-bold mb-6 text-gray-900">The Impact of Remote Talent</h2>
               <p className="text-gray-600 max-w-3xl mx-auto">
-                Companies that work with Crossover consistently report impressive results.
+                Companies that work with USS Agency consistently report impressive results.
               </p>
             </div>
 
@@ -186,7 +186,7 @@ const SuccessStories = () => {
               {[
                 { metric: "40%", description: "Average cost savings compared to traditional hiring" },
                 { metric: "75%", description: "Reduction in time-to-hire for specialized roles" },
-                { metric: "94%", description: "Client satisfaction rate with their Crossover talent" },
+                { metric: "94%", description: "Client satisfaction rate with their USS Agency talent" },
                 { metric: "3.5x", description: "Average productivity increase reported" }
               ].map((stat, index) => (
                 <div key={index} className="bg-gray-50 p-8 rounded-lg text-center">
@@ -204,7 +204,7 @@ const SuccessStories = () => {
             <div className="max-w-3xl mx-auto text-center">
               <h2 className="text-3xl font-bold mb-6">Ready to Write Your Success Story?</h2>
               <p className="text-xl text-indigo-100 mb-8">
-                Join the companies that have transformed their workforce with Crossover's global talent solutions.
+                Join the companies that have transformed their workforce with USS Agency's global talent solutions.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button className="bg-white text-indigo-600 hover:bg-indigo-50">

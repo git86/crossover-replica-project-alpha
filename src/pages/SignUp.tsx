@@ -169,7 +169,7 @@ const SignUp = () => {
             <div className="text-center mb-8">
               <h1 className="text-2xl font-bold mb-2 text-gray-900">Create an Account</h1>
               <p className="text-gray-600">
-                Join Crossover to access global remote opportunities
+                Join USS  Agency to access global remote opportunities
               </p>
             </div>
 

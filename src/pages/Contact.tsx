@@ -38,12 +38,12 @@ const Contact = () => {
                     <div>
                       <h3 className="text-lg font-semibold text-gray-900 mb-1">Email Us</h3>
                       <p className="text-gray-600 mb-1">General Inquiries:</p>
-                      <a href="mailto:info@crossover.com" className="text-crossover-blue hover:underline">
-                        info@crossover.com
+                      <a href="mailto:info@ussagency.com" className="text-crossover-blue hover:underline">
+                        info@ussagency.com
                       </a>
                       <p className="text-gray-600 mt-3 mb-1">Support:</p>
-                      <a href="mailto:support@crossover.com" className="text-crossover-blue hover:underline">
-                        support@crossover.com
+                      <a href="mailto:support@ussagency.com" className="text-crossover-blue hover:underline">
+                        support@ussagency.com
                       </a>
                     </div>
                   </div>

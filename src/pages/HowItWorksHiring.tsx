@@ -36,7 +36,7 @@ const HowItWorksHiring = () => {
         <section className="py-20 bg-gradient-to-r from-teal-600 to-cyan-600 text-white">
           <div className="container-custom">
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-4xl md:text-5xl font-bold mb-6">How Crossover Works for Employers</h1>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">How USS Agency Works for Employers</h1>
               <p className="text-xl mb-10 text-teal-100">
                 We've simplified the process of finding and hiring top global talent, saving you time and resources.
               </p>
@@ -87,9 +87,9 @@ const HowItWorksHiring = () => {
         <section className="py-20 bg-gray-50">
           <div className="container-custom">
             <div className="text-center mb-16">
-              <h2 className="text-3xl font-bold mb-6 text-gray-900">The Crossover Advantage</h2>
+              <h2 className="text-3xl font-bold mb-6 text-gray-900">The USS Agency Advantage</h2>
               <p className="text-gray-600 max-w-3xl mx-auto">
-                Why thousands of companies choose Crossover for their remote hiring needs.
+                Why thousands of companies choose USS Agency for their remote hiring needs.
               </p>
             </div>
 
@@ -219,7 +219,7 @@ const HowItWorksHiring = () => {
               <div className="text-5xl text-gray-200 absolute top-4 left-4">"</div>
               <div className="relative z-10">
                 <p className="text-lg md:text-xl text-gray-700 mb-6 italic">
-                  Working with Crossover has transformed our hiring process. We've been able to find exceptional talent quickly, and the quality of work has exceeded our expectations. The streamlined process saved us countless hours and improved our team's capabilities.
+                  Working with USS Agency has transformed our hiring process. We've been able to find exceptional talent quickly, and the quality of work has exceeded our expectations. The streamlined process saved us countless hours and improved our team's capabilities.
                 </p>
                 <div className="flex items-center">
                   <div className="w-12 h-12 bg-gray-300 rounded-full mr-4"></div>
@@ -239,7 +239,7 @@ const HowItWorksHiring = () => {
             <div className="max-w-3xl mx-auto text-center">
               <h2 className="text-3xl font-bold mb-6">Ready to Transform Your Hiring?</h2>
               <p className="text-xl text-teal-100 mb-8">
-                Join thousands of companies that trust Crossover to find their ideal talent.
+                Join thousands of companies that trust USS Agency to find their ideal talent.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button className="bg-white text-teal-600 hover:bg-teal-50">

@@ -17,7 +17,7 @@ const Privacy = () => {
 
               <h2 className="text-2xl font-semibold mt-10 mb-4">1. Introduction</h2>
               <p>
-                Welcome to Crossover's Privacy Policy. This policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.
+                Welcome to USS Agency's Privacy Policy. This policy explains how we collect, use, disclose, and safeguard your information when you visit our website or use our services.
               </p>
               <p>
                 We are committed to protecting your personal information and your right to privacy. Please read this privacy policy carefully to understand our practices regarding your personal data and how we will treat it.
@@ -96,7 +96,7 @@ const Privacy = () => {
                 If you have any questions about this privacy policy or our privacy practices, please contact us at:
               </p>
               <p className="mb-4">
-                Email: privacy@crossover.com<br />
+                Email: privacy@ussagency.com<br />
                 Address: 100 Innovation Drive, Tech City, CA 94000, USA<br />
                 Phone: +1 (555) 123-4567
               </p>

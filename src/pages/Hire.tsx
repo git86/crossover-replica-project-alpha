@@ -51,7 +51,7 @@ const Hire = () => {
         <section className="py-20 bg-white">
           <div className="container-custom">
             <div className="max-w-3xl mx-auto text-center mb-16">
-              <h2 className="text-3xl font-bold mb-6 text-gray-900">Why Hire Through Crossover</h2>
+              <h2 className="text-3xl font-bold mb-6 text-gray-900">Why Hire Through USS Agency</h2>
               <p className="text-gray-600">
                 We've revolutionized remote hiring to make it efficient, reliable, and successful.
               </p>
@@ -77,7 +77,7 @@ const Hire = () => {
             <div className="max-w-3xl mx-auto text-center">
               <h2 className="text-3xl font-bold mb-6 text-gray-900">Ready to Build Your Dream Team?</h2>
               <p className="text-gray-600 mb-8">
-                Join thousands of companies that have transformed their business with Crossover talent.
+                Join thousands of companies that have transformed their business with USS Agency talent.
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Button className="bg-crossover-blue text-white hover:bg-blue-700">

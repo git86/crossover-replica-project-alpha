@@ -12,7 +12,7 @@ const Help = () => {
       category: "For Talents",
       questions: [
         {
-          question: "How do I apply for jobs on Crossover?",
+          question: "How do I apply for jobs on USS Agency?",
           answer: "To apply for jobs, create an account, complete your profile, and browse our job listings. When you find a position that matches your skills, click the 'Apply' button and follow the application process."
         },
         {
@@ -25,7 +25,7 @@ const Help = () => {
         },
         {
           question: "How do I get paid for my work?",
-          answer: "Crossover offers multiple payment methods including direct bank transfers, PayPal, and other options depending on your location. Payments are processed weekly or monthly depending on your contract."
+          answer: "USS Agency offers multiple payment methods including direct bank transfers, PayPal, and other options depending on your location. Payments are processed weekly or monthly depending on your contract."
         }
       ]
     },
@@ -33,7 +33,7 @@ const Help = () => {
       category: "For Companies",
       questions: [
         {
-          question: "How does Crossover vet talent?",
+          question: "How does USS Agency vet talent?",
           answer: "We use a data-driven assessment process that includes skills testing, personality assessments, and paid trial periods to identify top performers. Only the top 1% of applicants make it through our rigorous vetting."
         },
         {
