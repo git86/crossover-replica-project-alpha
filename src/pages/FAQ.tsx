@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const FAQ = () => {
   const [activeCategory, setActiveCategory] = useState("general");
@@ -178,7 +179,7 @@ const FAQ = () => {
                 We're here to help. Contact our support team for assistance.
               </p>
               <Button className="btn-primary">
-                Contact Support
+                <Link to="/contact">Contact Support</Link>
               </Button>
             </div>
           </div>

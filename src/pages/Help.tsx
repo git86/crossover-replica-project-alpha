@@ -5,6 +5,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Help = () => {
   const faqCategories = [
@@ -125,7 +126,7 @@ const Help = () => {
                   Submit a ticket and our team will get back to you within 24 hours.
                 </p>
                 <Button className="w-full bg-crossover-blue hover:bg-blue-700">
-                  Submit a Ticket
+                  <Link to="/contact">Submit a Ticket</Link>
                 </Button>
               </div>
               <div className="bg-white rounded-lg p-8 shadow-sm">
@@ -134,7 +135,7 @@ const Help = () => {
                   Book a call with our support team for personalized assistance.
                 </p>
                 <Button className="w-full bg-crossover-blue hover:bg-blue-700">
-                  Book a Call
+                  <Link to="/contact">Book a Call</Link>
                 </Button>
               </div>
             </div>
