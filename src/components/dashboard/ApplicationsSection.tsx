@@ -2,130 +2,98 @@
 import { useState, useEffect } from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { FileText, ExternalLink, Plus } from "lucide-react";
+import { FileText, ExternalLink } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { Application, Job } from "@/types";
 
 const ApplicationsSection = () => {
-  const [applications, setApplications] = useState<any[]>([]);
+  const [applications, setApplications] = useState<(Application & { job: Job })[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Load applications from localStorage
-    const loadApplications = () => {
+    const fetchApplications = async () => {
       try {
-        // Get current user to find their applications
-        const currentUser = localStorage.getItem("currentUser");
-        if (!currentUser) return;
+        setIsLoading(true);
         
-        const userId = JSON.parse(currentUser).id;
+        const { data: session } = await supabase.auth.getSession();
+        if (!session.session) return;
         
-        const savedApplications = localStorage.getItem(`applications_${userId}`);
-        if (savedApplications) {
-          setApplications(JSON.parse(savedApplications));
-        } else {
-          // Set default mock data for first-time users
-          const defaultApplications = [
-            {
-              id: 1,
-              position: "Senior Frontend Developer",
-              company: "USS AGENCY Inc.",
-              appliedDate: "2023-11-15",
-              status: "In Review",
-              statusColor: "bg-yellow-100 text-yellow-800"
-            },
-            {
-              id: 2,
-              position: "Full Stack Engineer",
-              company: "USS AGENCY Solutions",
-              appliedDate: "2023-11-10",
-              status: "Interview Scheduled",
-              statusColor: "bg-blue-100 text-blue-800"
-            }
-          ];
+        // Fetch applications with job details using a join
+        const { data, error } = await supabase
+          .from('applications')
+          .select(`
+            id,
+            status,
+            applied_date,
+            job:jobs(
+              id,
+              title,
+              company
+            )
+          `)
+          .eq('user_id', session.session.user.id);
           
-          setApplications(defaultApplications);
-          localStorage.setItem(`applications_${userId}`, JSON.stringify(defaultApplications));
-        }
+        if (error) throw error;
+        
+        setApplications(data || []);
       } catch (error) {
-        toast.error("Failed to load applications data");
+        console.error("Error fetching applications:", error);
+        toast.error("Failed to load applications");
       } finally {
         setIsLoading(false);
       }
     };
     
-    loadApplications();
+    fetchApplications();
   }, []);
 
-  const handleStatusChange = (applicationId: number) => {
+  const handleStatusChange = async (applicationId: string, newStatus: string) => {
     try {
-      // Get current user to find their applications
-      const currentUser = localStorage.getItem("currentUser");
-      if (!currentUser) return;
+      const { error } = await supabase
+        .from('applications')
+        .update({ status: newStatus })
+        .eq('id', applicationId);
+        
+      if (error) throw error;
       
-      const userId = JSON.parse(currentUser).id;
+      // Update local state
+      setApplications(applications.map(app => 
+        app.id === applicationId ? { ...app, status: newStatus } : app
+      ));
       
-      // Simple mock of status change cycling through statuses
-      const statuses = [
-        { status: "Applied", color: "bg-gray-100 text-gray-800" },
-        { status: "In Review", color: "bg-yellow-100 text-yellow-800" },
-        { status: "Interview Scheduled", color: "bg-blue-100 text-blue-800" },
-        { status: "Accepted", color: "bg-green-100 text-green-800" },
-        { status: "Rejected", color: "bg-red-100 text-red-800" }
-      ];
-      
-      const updatedApplications = applications.map(app => {
-        if (app.id === applicationId) {
-          const currentStatusIndex = statuses.findIndex(s => s.status === app.status);
-          const nextStatusIndex = (currentStatusIndex + 1) % statuses.length;
-          return {
-            ...app,
-            status: statuses[nextStatusIndex].status,
-            statusColor: statuses[nextStatusIndex].color
-          };
-        }
-        return app;
-      });
-      
-      setApplications(updatedApplications);
-      localStorage.setItem(`applications_${userId}`, JSON.stringify(updatedApplications));
       toast.success("Application status updated");
     } catch (error) {
+      console.error("Error updating application status:", error);
       toast.error("Failed to update application status");
     }
   };
 
-  const handleAddApplication = () => {
-    try {
-      // Get current user to find their applications
-      const currentUser = localStorage.getItem("currentUser");
-      if (!currentUser) return;
-      
-      const userId = JSON.parse(currentUser).id;
-      
-      // Simple modal for adding a mock application
-      const position = prompt("Enter job position:");
-      const company = prompt("Enter company name:");
-      
-      if (position && company) {
-        const newApplication = {
-          id: Date.now(),
-          position,
-          company,
-          appliedDate: new Date().toISOString().split('T')[0],
-          status: "Applied",
-          statusColor: "bg-gray-100 text-gray-800"
-        };
-        
-        const updatedApplications = [...applications, newApplication];
-        setApplications(updatedApplications);
-        localStorage.setItem(`applications_${userId}`, JSON.stringify(updatedApplications));
-        toast.success("Application added successfully");
-      }
-    } catch (error) {
-      toast.error("Failed to add application");
+  // Get the appropriate color for status badges
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Applied": return "bg-gray-100 text-gray-800";
+      case "In Review": return "bg-yellow-100 text-yellow-800";
+      case "Interview Scheduled": return "bg-blue-100 text-blue-800";
+      case "Accepted": return "bg-green-100 text-green-800";
+      case "Rejected": return "bg-red-100 text-red-800";
+      default: return "bg-gray-100 text-gray-800";
     }
+  };
+
+  // Get the next status in the cycle
+  const getNextStatus = (currentStatus: string) => {
+    const statuses = [
+      "Applied", 
+      "In Review", 
+      "Interview Scheduled", 
+      "Accepted", 
+      "Rejected"
+    ];
+    
+    const currentIndex = statuses.indexOf(currentStatus);
+    return statuses[(currentIndex + 1) % statuses.length];
   };
 
   if (isLoading) {
@@ -140,14 +108,6 @@ const ApplicationsSection = () => {
           <span className="bg-blue-100 text-crossover-blue px-3 py-1 rounded-full text-sm">
             {applications.length} Applications
           </span>
-          <Button 
-            size="sm" 
-            onClick={handleAddApplication}
-            className="flex items-center gap-1"
-          >
-            <Plus className="w-4 h-4" />
-            Add Application
-          </Button>
         </div>
       </div>
       
@@ -166,13 +126,13 @@ const ApplicationsSection = () => {
             <TableBody>
               {applications.map((app) => (
                 <TableRow key={app.id}>
-                  <TableCell className="font-medium">{app.position}</TableCell>
-                  <TableCell>{app.company}</TableCell>
-                  <TableCell>{new Date(app.appliedDate).toLocaleDateString()}</TableCell>
+                  <TableCell className="font-medium">{app.job.title}</TableCell>
+                  <TableCell>{app.job.company}</TableCell>
+                  <TableCell>{new Date(app.applied_date).toLocaleDateString()}</TableCell>
                   <TableCell>
                     <button 
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${app.statusColor} cursor-pointer`}
-                      onClick={() => handleStatusChange(app.id)}
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(app.status)} cursor-pointer`}
+                      onClick={() => handleStatusChange(app.id, getNextStatus(app.status))}
                       title="Click to change status"
                     >
                       {app.status}
@@ -186,12 +146,13 @@ const ApplicationsSection = () => {
                       >
                         <FileText className="w-4 h-4" />
                       </button>
-                      <button 
+                      <Link 
+                        to={`/jobs/${app.job.id}`}
                         className="text-gray-500 hover:text-blue-600"
                         title="View job posting"
                       >
                         <ExternalLink className="w-4 h-4" />
-                      </button>
+                      </Link>
                     </div>
                   </TableCell>
                 </TableRow>
