@@ -147,17 +147,16 @@ const SignUp = () => {
       }
 
       // Step 3: Update the user's profile with verification details
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({
-          selfie_verification: selfieUrl,
-          passport_verification: passportUrl,
-          verification_status: 'pending'
-        })
-        .eq('id', authData.user.id);
+      const { error: updateError } = await supabase.rpc('update_profile_verification', {
+        user_id: authData.user.id,
+        selfie_path: selfieUrl,
+        passport_path: passportUrl,
+        verification_status: 'pending'
+      });
 
-      if (profileError) {
-        console.error("Error updating profile with verification details:", profileError);
+      if (updateError) {
+        console.error("Error updating profile with verification details:", updateError);
+        // Still proceed even if verification update fails
       }
 
       toast.success("Account created successfully! Your verification is pending review.");
