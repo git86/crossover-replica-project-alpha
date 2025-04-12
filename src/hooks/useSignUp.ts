@@ -121,10 +121,10 @@ export const useSignUp = () => {
 
       // Step 3: Update the user's profile with verification details
       const { error: updateError } = await supabase.rpc('update_profile_verification', {
-        user_id: authData.user.id,
-        selfie_path: selfieUrl,
-        passport_path: passportUrl,
-        verification_status: 'pending'
+        user_id: authData.user.id as string,
+        selfie_path: selfieUrl as string,
+        passport_path: passportUrl as string,
+        verification_status: 'pending' as string
       });
 
       if (updateError) {
