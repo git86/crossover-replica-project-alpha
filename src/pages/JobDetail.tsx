@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -6,18 +5,25 @@ import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
 import { Bookmark, Share2, MapPin, Building, Clock, DollarSign, Send } from "lucide-react";
 import { toast } from "sonner";
+import JobApplicationForm from "@/components/JobApplicationForm";
+import { supabase } from "@/integrations/supabase/client";
 
 const JobDetail = () => {
   const { id } = useParams<{ id: string }>();
   const [job, setJob] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaved, setIsSaved] = useState(false);
+  const [showApplicationForm, setShowApplicationForm] = useState(false);
+  const [hasApplied, setHasApplied] = useState(false);
 
   useEffect(() => {
-    // In a real app, we would fetch the job details from an API
-    // For now, we'll use mock data
-    const fetchJobDetails = () => {
+    const fetchJobDetails = async () => {
       try {
+        setIsLoading(true);
+        
+        const { data: sessionData } = await supabase.auth.getSession();
+        const userId = sessionData.session?.user.id;
+        
         setTimeout(() => {
           const mockJob = {
             id: id,
@@ -63,10 +69,20 @@ const JobDetail = () => {
           
           setJob(mockJob);
           
-          // Check if this job is saved
-          const savedJobs = JSON.parse(localStorage.getItem("savedJobs_user123") || "[]");
-          const jobIsSaved = savedJobs.some((savedJob: any) => savedJob.id.toString() === id);
-          setIsSaved(jobIsSaved);
+          if (userId) {
+            checkIfJobIsSaved(userId);
+            checkIfUserHasApplied(userId);
+          } else {
+            const savedJobs = JSON.parse(localStorage.getItem("savedJobs_user123") || "[]");
+            const jobIsSaved = savedJobs.some((savedJob: any) => savedJob.id.toString() === id);
+            setIsSaved(jobIsSaved);
+            
+            const applications = JSON.parse(localStorage.getItem("applications_user123") || "[]");
+            const hasAppliedToJob = applications.some((app: any) => 
+              app.position === mockJob.title && app.company === mockJob.company
+            );
+            setHasApplied(hasAppliedToJob);
+          }
           
           setIsLoading(false);
         }, 1000);
@@ -79,19 +95,91 @@ const JobDetail = () => {
     fetchJobDetails();
   }, [id]);
 
-  const handleSaveJob = () => {
+  const checkIfJobIsSaved = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('saved_jobs')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('job_id', id)
+        .maybeSingle();
+        
+      if (error) throw error;
+      
+      setIsSaved(!!data);
+    } catch (error) {
+      console.error("Error checking if job is saved:", error);
+    }
+  };
+
+  const checkIfUserHasApplied = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('applications')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('job_id', id)
+        .maybeSingle();
+        
+      if (error) throw error;
+      
+      setHasApplied(!!data);
+    } catch (error) {
+      console.error("Error checking if user has applied:", error);
+    }
+  };
+
+  const handleSaveJob = async () => {
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const userId = sessionData.session?.user.id;
+      
+      if (!userId) {
+        handleSaveJobLocally();
+        return;
+      }
+      
+      if (isSaved) {
+        const { error } = await supabase
+          .from('saved_jobs')
+          .delete()
+          .eq('user_id', userId)
+          .eq('job_id', id);
+          
+        if (error) throw error;
+        
+        setIsSaved(false);
+        toast.success("Job removed from saved jobs");
+      } else {
+        const { error } = await supabase
+          .from('saved_jobs')
+          .insert({
+            user_id: userId,
+            job_id: id
+          });
+          
+        if (error) throw error;
+        
+        setIsSaved(true);
+        toast.success("Job saved successfully");
+      }
+    } catch (error) {
+      console.error("Error saving job:", error);
+      toast.error("Failed to save job");
+    }
+  };
+
+  const handleSaveJobLocally = () => {
     try {
       const userId = "user123"; // In a real app, this would come from auth
       const savedJobs = JSON.parse(localStorage.getItem(`savedJobs_${userId}`) || "[]");
       
       if (isSaved) {
-        // Remove from saved jobs
         const updatedJobs = savedJobs.filter((savedJob: any) => savedJob.id.toString() !== id);
         localStorage.setItem(`savedJobs_${userId}`, JSON.stringify(updatedJobs));
         setIsSaved(false);
         toast.success("Job removed from saved jobs");
       } else {
-        // Add to saved jobs
         const jobToSave = {
           id: job.id,
           position: job.title,
@@ -113,35 +201,7 @@ const JobDetail = () => {
   };
 
   const handleApply = () => {
-    try {
-      const userId = "user123"; // In a real app, this would come from auth
-      const applications = JSON.parse(localStorage.getItem(`applications_${userId}`) || "[]");
-      
-      // Check if already applied
-      const alreadyApplied = applications.some((app: any) => app.position === job.title && app.company === job.company);
-      
-      if (alreadyApplied) {
-        toast.info("You've already applied to this job");
-        return;
-      }
-      
-      // Add to applications
-      const newApplication = {
-        id: Date.now(),
-        position: job.title,
-        company: job.company,
-        appliedDate: new Date().toISOString().split('T')[0],
-        status: "Applied",
-        statusColor: "bg-gray-100 text-gray-800"
-      };
-      
-      applications.push(newApplication);
-      localStorage.setItem(`applications_${userId}`, JSON.stringify(applications));
-      
-      toast.success("Application submitted successfully");
-    } catch (error) {
-      toast.error("Failed to submit application");
-    }
+    setShowApplicationForm(true);
   };
 
   const handleShare = () => {
@@ -154,7 +214,6 @@ const JobDetail = () => {
       .then(() => toast.success("Shared successfully"))
       .catch(() => toast.error("Error sharing"));
     } else {
-      // Fallback for browsers that don't support the Web Share API
       navigator.clipboard.writeText(window.location.href)
         .then(() => toast.success("Link copied to clipboard"))
         .catch(() => toast.error("Failed to copy link"));
@@ -188,14 +247,12 @@ const JobDetail = () => {
       <main className="flex-grow pt-16">
         <div className="container-custom py-12">
           <div className="max-w-3xl mx-auto">
-            {/* Breadcrumb */}
             <div className="flex text-sm mb-6 text-gray-500">
               <Link to="/jobs" className="hover:text-crossover-blue">Jobs</Link>
               <span className="mx-2">/</span>
               <span>{job.title}</span>
             </div>
             
-            {/* Job Header */}
             <div className="mb-8">
               <h1 className="text-3xl font-bold text-gray-900 mb-3">{job.title}</h1>
               <div className="flex items-center text-xl text-crossover-blue mb-4">
@@ -225,9 +282,10 @@ const JobDetail = () => {
                 <Button 
                   className="flex-1 sm:flex-none"
                   onClick={handleApply}
+                  disabled={hasApplied}
                 >
                   <Send className="mr-2 h-4 w-4" />
-                  Apply Now
+                  {hasApplied ? "Already Applied" : "Apply Now"}
                 </Button>
                 <Button
                   variant="outline"
@@ -247,7 +305,6 @@ const JobDetail = () => {
               </div>
             </div>
             
-            {/* Job Description */}
             <div className="bg-white rounded-lg border p-6 mb-8">
               <h2 className="text-xl font-semibold mb-4">Job Description</h2>
               <div 
@@ -256,7 +313,6 @@ const JobDetail = () => {
               ></div>
             </div>
             
-            {/* Skills */}
             <div className="bg-white rounded-lg border p-6 mb-8">
               <h2 className="text-xl font-semibold mb-4">Required Skills</h2>
               <div className="flex flex-wrap gap-2">
@@ -271,7 +327,6 @@ const JobDetail = () => {
               </div>
             </div>
             
-            {/* Apply Button (Bottom) */}
             <div className="bg-white rounded-lg border p-6 text-center">
               <h3 className="text-lg font-semibold mb-3">Interested in this position?</h3>
               <p className="text-gray-600 mb-4">
@@ -280,15 +335,24 @@ const JobDetail = () => {
               <Button 
                 size="lg"
                 onClick={handleApply}
+                disabled={hasApplied}
               >
                 <Send className="mr-2 h-4 w-4" />
-                Apply for this Position
+                {hasApplied ? "You've Already Applied" : "Apply for this Position"}
               </Button>
             </div>
           </div>
         </div>
       </main>
       <Footer />
+      
+      <JobApplicationForm
+        isOpen={showApplicationForm}
+        onClose={() => setShowApplicationForm(false)}
+        jobId={id || ""}
+        jobTitle={job?.title || ""}
+        company={job?.company || ""}
+      />
     </div>
   );
 };
