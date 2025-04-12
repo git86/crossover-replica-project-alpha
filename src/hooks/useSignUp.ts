@@ -1,8 +1,9 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+
+type VerificationType = 'selfie' | 'passportPhoto';
 
 export const useSignUp = () => {
   const [step, setStep] = useState(1);
@@ -30,17 +31,18 @@ export const useSignUp = () => {
     });
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, type: 'selfie' | 'passportPhoto') => {
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: VerificationType
+  ) => {
     const file = e.target.files?.[0] || null;
-    
+
     if (file) {
-      // Update verification data
       setVerificationData(prev => ({
         ...prev,
         [type]: file
       }));
-      
-      // Create and set preview URL
+
       const previewUrl = URL.createObjectURL(file);
       if (type === 'selfie') {
         setSelfiePreview(previewUrl);
@@ -60,17 +62,15 @@ export const useSignUp = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validate verification uploads
+
     if (!verificationData.selfie || !verificationData.passportPhoto) {
       toast.error("Please upload both required verification photos");
       return;
     }
-    
+
     setIsLoading(true);
-    
+
     try {
-      // Step 1: Register the user with Supabase Auth
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
@@ -81,15 +81,9 @@ export const useSignUp = () => {
         }
       });
 
-      if (authError) {
-        throw new Error(authError.message);
-      }
+      if (authError) throw new Error(authError.message);
+      if (!authData.user) throw new Error("Failed to create user account");
 
-      if (!authData.user) {
-        throw new Error("Failed to create user account");
-      }
-
-      // Step 2: Upload verification photos to Supabase Storage
       let selfieUrl = null;
       let passportUrl = null;
 
@@ -98,7 +92,7 @@ export const useSignUp = () => {
         const { data: selfieData, error: selfieError } = await supabase.storage
           .from('verifications')
           .upload(selfieFileName, verificationData.selfie);
-        
+
         if (selfieError) {
           console.error("Error uploading selfie:", selfieError);
         } else {
@@ -111,7 +105,7 @@ export const useSignUp = () => {
         const { data: passportData, error: passportError } = await supabase.storage
           .from('verifications')
           .upload(passportFileName, verificationData.passportPhoto);
-        
+
         if (passportError) {
           console.error("Error uploading passport photo:", passportError);
         } else {
@@ -119,17 +113,15 @@ export const useSignUp = () => {
         }
       }
 
-      // Step 3: Update the user's profile with verification details
       const { error: updateError } = await supabase.rpc('update_profile_verification', {
-        user_id: authData.user.id as string,
-        selfie_path: selfieUrl as string,
-        passport_path: passportUrl as string,
-        verification_status: 'pending' as string
+        user_id: authData.user.id,
+        selfie_path: selfieUrl,
+        passport_path: passportUrl,
+        verification_status: 'pending'
       });
 
       if (updateError) {
         console.error("Error updating profile with verification details:", updateError);
-        // Still proceed even if verification update fails
       }
 
       toast.success("Account created successfully! Your verification is pending review.");
@@ -144,7 +136,7 @@ export const useSignUp = () => {
 
   const handleSocialSignUp = async (provider: 'google' | 'github') => {
     setIsLoading(true);
-    
+
     try {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
@@ -156,7 +148,6 @@ export const useSignUp = () => {
       if (error) {
         throw error;
       }
-      // The redirect is handled by Supabase
     } catch (error) {
       console.error(`${provider} sign up error:`, error);
       toast.error(`Failed to sign up with ${provider}`);
