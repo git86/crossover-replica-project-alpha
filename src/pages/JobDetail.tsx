@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
@@ -15,15 +16,21 @@ const JobDetail = () => {
   const [isSaved, setIsSaved] = useState(false);
   const [showApplicationForm, setShowApplicationForm] = useState(false);
   const [hasApplied, setHasApplied] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
 
+  // Fetch the job details and check application status
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
         setIsLoading(true);
         
+        // Get current user session
         const { data: sessionData } = await supabase.auth.getSession();
-        const userId = sessionData.session?.user.id;
+        const currentUserId = sessionData.session?.user.id;
+        setUserId(currentUserId || null);
         
+        // For demo purposes, we're using mock data for the job
+        // In a real app, you would fetch this from Supabase
         setTimeout(() => {
           const mockJob = {
             id: id,
@@ -69,24 +76,15 @@ const JobDetail = () => {
           
           setJob(mockJob);
           
-          if (userId) {
-            checkIfJobIsSaved(userId);
-            checkIfUserHasApplied(userId);
-          } else {
-            const savedJobs = JSON.parse(localStorage.getItem("savedJobs_user123") || "[]");
-            const jobIsSaved = savedJobs.some((savedJob: any) => savedJob.id.toString() === id);
-            setIsSaved(jobIsSaved);
-            
-            const applications = JSON.parse(localStorage.getItem("applications_user123") || "[]");
-            const hasAppliedToJob = applications.some((app: any) => 
-              app.position === mockJob.title && app.company === mockJob.company
-            );
-            setHasApplied(hasAppliedToJob);
+          if (currentUserId) {
+            checkIfJobIsSaved(currentUserId);
+            checkIfUserHasApplied(currentUserId);
           }
           
           setIsLoading(false);
         }, 1000);
       } catch (error) {
+        console.error("Error fetching job details:", error);
         toast.error("Failed to load job details");
         setIsLoading(false);
       }
@@ -95,6 +93,7 @@ const JobDetail = () => {
     fetchJobDetails();
   }, [id]);
 
+  // Check if the job is saved by the user
   const checkIfJobIsSaved = async (userId: string) => {
     try {
       const { data, error } = await supabase
@@ -112,6 +111,7 @@ const JobDetail = () => {
     }
   };
 
+  // Check if the user has already applied for this job
   const checkIfUserHasApplied = async (userId: string) => {
     try {
       const { data, error } = await supabase
@@ -129,17 +129,16 @@ const JobDetail = () => {
     }
   };
 
+  // Save or unsave a job
   const handleSaveJob = async () => {
     try {
-      const { data: sessionData } = await supabase.auth.getSession();
-      const userId = sessionData.session?.user.id;
-      
       if (!userId) {
-        handleSaveJobLocally();
+        toast.error("You must be logged in to save jobs");
         return;
       }
       
       if (isSaved) {
+        // Delete the saved job from Supabase
         const { error } = await supabase
           .from('saved_jobs')
           .delete()
@@ -151,6 +150,7 @@ const JobDetail = () => {
         setIsSaved(false);
         toast.success("Job removed from saved jobs");
       } else {
+        // Insert the saved job into Supabase
         const { error } = await supabase
           .from('saved_jobs')
           .insert({
@@ -169,41 +169,22 @@ const JobDetail = () => {
     }
   };
 
-  const handleSaveJobLocally = () => {
-    try {
-      const userId = "user123"; // In a real app, this would come from auth
-      const savedJobs = JSON.parse(localStorage.getItem(`savedJobs_${userId}`) || "[]");
-      
-      if (isSaved) {
-        const updatedJobs = savedJobs.filter((savedJob: any) => savedJob.id.toString() !== id);
-        localStorage.setItem(`savedJobs_${userId}`, JSON.stringify(updatedJobs));
-        setIsSaved(false);
-        toast.success("Job removed from saved jobs");
-      } else {
-        const jobToSave = {
-          id: job.id,
-          position: job.title,
-          company: job.company,
-          location: job.location,
-          salary: job.salary,
-          postedDate: new Date().toISOString().split('T')[0],
-          logo: job.company.split(' ').map((word: string) => word[0]).join('').toUpperCase()
-        };
-        
-        savedJobs.push(jobToSave);
-        localStorage.setItem(`savedJobs_${userId}`, JSON.stringify(savedJobs));
-        setIsSaved(true);
-        toast.success("Job saved successfully");
-      }
-    } catch (error) {
-      toast.error("Failed to save job");
-    }
-  };
-
+  // Open the application form
   const handleApply = () => {
+    if (!userId) {
+      toast.error("You must be logged in to apply for jobs");
+      return;
+    }
     setShowApplicationForm(true);
   };
 
+  // Called when application is submitted
+  const handleApplicationSubmitted = async () => {
+    setHasApplied(true);
+    await checkIfUserHasApplied(userId!);
+  };
+
+  // Share job via Web Share API or copy link
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
@@ -352,6 +333,7 @@ const JobDetail = () => {
         jobId={id || ""}
         jobTitle={job?.title || ""}
         company={job?.company || ""}
+        onApplicationSubmitted={handleApplicationSubmitted}
       />
     </div>
   );

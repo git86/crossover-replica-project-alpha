@@ -29,6 +29,7 @@ interface JobApplicationFormProps {
   jobId: string;
   jobTitle: string;
   company: string;
+  onApplicationSubmitted?: () => void; // Callback to notify parent component
 }
 
 type FormValues = {
@@ -38,7 +39,14 @@ type FormValues = {
   coverLetter: string;
 };
 
-const JobApplicationForm = ({ isOpen, onClose, jobId, jobTitle, company }: JobApplicationFormProps) => {
+const JobApplicationForm = ({ 
+  isOpen, 
+  onClose, 
+  jobId, 
+  jobTitle, 
+  company,
+  onApplicationSubmitted 
+}: JobApplicationFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<FormValues>({
@@ -67,13 +75,22 @@ const JobApplicationForm = ({ isOpen, onClose, jobId, jobTitle, company }: JobAp
           user_id: session.session.user.id,
           job_id: jobId,
           status: 'Applied',
-          // Additional application data could be stored in a separate table
+          applied_date: new Date().toISOString()
         });
         
-      if (error) throw error;
+      if (error) {
+        console.error("Database insertion error:", error);
+        throw error;
+      }
       
       toast.success("Application submitted successfully");
       form.reset();
+      
+      // Notify parent component that application was submitted
+      if (onApplicationSubmitted) {
+        onApplicationSubmitted();
+      }
+      
       onClose();
     } catch (error) {
       console.error("Error submitting application:", error);
