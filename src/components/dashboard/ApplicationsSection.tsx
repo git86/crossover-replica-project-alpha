@@ -25,8 +25,12 @@ const ApplicationsSection = () => {
           .from('applications')
           .select(`
             id,
+            user_id,
+            job_id,
             status,
             applied_date,
+            created_at,
+            updated_at,
             job:jobs(
               id,
               title,
@@ -37,7 +41,16 @@ const ApplicationsSection = () => {
           
         if (error) throw error;
         
-        setApplications(data || []);
+        // Ensure data matches our expected type structure
+        const typedData = data?.map(item => ({
+          ...item,
+          user_id: item.user_id,
+          job_id: item.job_id,
+          created_at: item.created_at,
+          updated_at: item.updated_at
+        })) || [];
+        
+        setApplications(typedData as (Application & { job: Job })[]);
       } catch (error) {
         console.error("Error fetching applications:", error);
         toast.error("Failed to load applications");
@@ -147,7 +160,7 @@ const ApplicationsSection = () => {
                         <FileText className="w-4 h-4" />
                       </button>
                       <Link 
-                        to={`/jobs/${app.job.id}`}
+                        to={`/jobs/${app.job_id}`}
                         className="text-gray-500 hover:text-blue-600"
                         title="View job posting"
                       >

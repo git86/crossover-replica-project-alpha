@@ -24,6 +24,7 @@ const SavedJobsSection = () => {
           .from('saved_jobs')
           .select(`
             id,
+            user_id,
             job_id,
             created_at,
             job:jobs(
@@ -39,7 +40,13 @@ const SavedJobsSection = () => {
           
         if (error) throw error;
         
-        setSavedJobs(data || []);
+        // Ensure data matches our expected type structure
+        const typedData = data?.map(item => ({
+          ...item,
+          user_id: item.user_id
+        })) || [];
+        
+        setSavedJobs(typedData as (SavedJob & { job: Job })[]);
       } catch (error) {
         console.error("Error fetching saved jobs:", error);
         toast.error("Failed to load saved jobs");
