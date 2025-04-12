@@ -8,6 +8,7 @@ import { Eye, EyeOff, Lock, Mail, User, Camera, Upload } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { supabase } from "@/integrations/supabase/client";
 
 const SignUp = () => {
   const [step, setStep] = useState(1);
@@ -79,7 +80,7 @@ const SignUp = () => {
     setStep(1);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (step === 1) {
@@ -95,116 +96,122 @@ const SignUp = () => {
     
     setIsLoading(true);
     
-    // Create a user object to save
-    const user = {
-      id: Date.now().toString(),
-      fullName: formData.fullName,
-      email: formData.email,
-      password: formData.password,
-      createdAt: new Date().toISOString(),
-      profilePicture: selfiePreview,
-      role: "applicant",
-      verificationStatus: "pending",
-      selfieVerification: selfiePreview,
-      passportVerification: passportPreview
-    };
-    
-    // Simulate API call
-    setTimeout(() => {
-      try {
-        // Check if user already exists
-        const existingUsers = JSON.parse(localStorage.getItem("users") || "[]");
-        const emailExists = existingUsers.some((u: any) => u.email === formData.email);
-        
-        if (emailExists) {
-          throw new Error("User with this email already exists");
+    try {
+      // Step 1: Register the user with Supabase Auth
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        options: {
+          data: {
+            full_name: formData.fullName,
+          }
         }
-        
-        // Save user
-        const updatedUsers = [...existingUsers, user];
-        localStorage.setItem("users", JSON.stringify(updatedUsers));
-        
-        // Save current user info (for "session")
-        localStorage.setItem("currentUser", JSON.stringify(user));
-        
-        toast.success("Account created successfully! Your verification is pending review.");
-        navigate("/dashboard");
-      } catch (error) {
-        toast.error((error as Error).message || "Registration failed");
-      } finally {
-        setIsLoading(false);
+      });
+
+      if (authError) {
+        throw new Error(authError.message);
       }
-    }, 1000);
+
+      if (!authData.user) {
+        throw new Error("Failed to create user account");
+      }
+
+      // Step 2: Upload verification photos to Supabase Storage
+      let selfieUrl = null;
+      let passportUrl = null;
+
+      if (verificationData.selfie) {
+        const selfieFileName = `verification/${authData.user.id}/selfie-${Date.now()}`;
+        const { data: selfieData, error: selfieError } = await supabase.storage
+          .from('verifications')
+          .upload(selfieFileName, verificationData.selfie);
+        
+        if (selfieError) {
+          console.error("Error uploading selfie:", selfieError);
+        } else {
+          selfieUrl = selfieData.path;
+        }
+      }
+
+      if (verificationData.passportPhoto) {
+        const passportFileName = `verification/${authData.user.id}/passport-${Date.now()}`;
+        const { data: passportData, error: passportError } = await supabase.storage
+          .from('verifications')
+          .upload(passportFileName, verificationData.passportPhoto);
+        
+        if (passportError) {
+          console.error("Error uploading passport photo:", passportError);
+        } else {
+          passportUrl = passportData.path;
+        }
+      }
+
+      // Step 3: Update the user's profile with verification details
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          selfie_verification: selfieUrl,
+          passport_verification: passportUrl,
+          verification_status: 'pending'
+        })
+        .eq('id', authData.user.id);
+
+      if (profileError) {
+        console.error("Error updating profile with verification details:", profileError);
+      }
+
+      toast.success("Account created successfully! Your verification is pending review.");
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Registration error:", error);
+      toast.error((error as Error).message || "Registration failed");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleGoogleSignUp = () => {
+  const handleGoogleSignUp = async () => {
     setIsLoading(true);
     
-    // Mock Google authentication for signup
-    setTimeout(() => {
-      const mockGoogleUser = {
-        id: "google-" + Date.now().toString(),
-        fullName: "Google User",
-        email: "google.user@example.com",
-        createdAt: new Date().toISOString(),
-        profilePicture: null,
-        role: "applicant",
-        authProvider: "google"
-      };
-      
-      localStorage.setItem("currentUser", JSON.stringify(mockGoogleUser));
-      
-      // Add to users list if not already there
-      try {
-        const users = JSON.parse(localStorage.getItem("users") || "[]");
-        const existingUser = users.find((u: any) => u.email === mockGoogleUser.email);
-        
-        if (!existingUser) {
-          localStorage.setItem("users", JSON.stringify([...users, mockGoogleUser]));
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`
         }
-      } catch (error) {
-        console.error("Error updating users list:", error);
+      });
+
+      if (error) {
+        throw error;
       }
-      
-      toast.success("Account created with Google successfully!");
-      navigate("/dashboard");
+      // The redirect is handled by Supabase
+    } catch (error) {
+      console.error("Google sign up error:", error);
+      toast.error("Failed to sign up with Google");
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
-  const handleGitHubSignUp = () => {
+  const handleGitHubSignUp = async () => {
     setIsLoading(true);
     
-    // Mock GitHub authentication for signup
-    setTimeout(() => {
-      const mockGitHubUser = {
-        id: "github-" + Date.now().toString(),
-        fullName: "GitHub User",
-        email: "github.user@example.com",
-        createdAt: new Date().toISOString(),
-        profilePicture: null,
-        role: "applicant",
-        authProvider: "github"
-      };
-      
-      localStorage.setItem("currentUser", JSON.stringify(mockGitHubUser));
-      
-      // Add to users list if not already there
-      try {
-        const users = JSON.parse(localStorage.getItem("users") || "[]");
-        const existingUser = users.find((u: any) => u.email === mockGitHubUser.email);
-        
-        if (!existingUser) {
-          localStorage.setItem("users", JSON.stringify([...users, mockGitHubUser]));
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'github',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`
         }
-      } catch (error) {
-        console.error("Error updating users list:", error);
+      });
+
+      if (error) {
+        throw error;
       }
-      
-      toast.success("Account created with GitHub successfully!");
-      navigate("/dashboard");
+      // The redirect is handled by Supabase
+    } catch (error) {
+      console.error("GitHub sign up error:", error);
+      toast.error("Failed to sign up with GitHub");
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   const renderBasicInfoStep = () => (

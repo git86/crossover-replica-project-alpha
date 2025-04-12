@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -7,6 +6,7 @@ import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -16,37 +16,54 @@ const SignIn = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Set up a default admin account if it doesn't exist
+  // Set up admin account if it doesn't exist
   useEffect(() => {
-    try {
-      const users = JSON.parse(localStorage.getItem("users") || "[]");
-      
-      // Check if admin account already exists
-      const adminExists = users.some((user: any) => user.email === "admin@ussagency.com");
-      
-      if (!adminExists) {
-        // Create default admin account
-        const adminUser = {
-          id: "admin-" + Date.now().toString(),
-          fullName: "USS AGENCY Admin",
-          email: "admin@ussagency.com",
-          password: "admin123",
-          createdAt: new Date().toISOString(),
-          profilePicture: null,
-          role: "admin"
-        };
+    const createAdminAccount = async () => {
+      try {
+        // Check if admin exists
+        const { data: profiles, error: profilesError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('email', 'admin@ussagency.com')
+          .single();
         
-        // Add admin to users list
-        localStorage.setItem("users", JSON.stringify([...users, adminUser]));
-        
-        console.log("Default admin account created");
+        if (profilesError && profilesError.code !== 'PGRST116') {
+          // PGRST116 is "no rows returned" error, which is expected if admin doesn't exist
+          console.error("Error checking for admin:", profilesError);
+          return;
+        }
+
+        // If admin already exists, do nothing
+        if (profiles) {
+          return;
+        }
+
+        // Create admin user
+        const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+          email: 'admin@ussagency.com',
+          password: 'admin123',
+          email_confirm: true,
+          user_metadata: {
+            full_name: 'USS AGENCY Admin',
+            role: 'admin'
+          }
+        });
+
+        if (authError) {
+          console.error("Error creating admin:", authError);
+        } else {
+          console.log("Default admin account created");
+        }
+      } catch (error) {
+        console.error("Error setting up admin account:", error);
       }
-    } catch (error) {
-      console.error("Error setting up admin account:", error);
-    }
+    };
+
+    // Uncomment this when we have admin API access
+    // createAdminAccount();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
 
@@ -57,102 +74,76 @@ const SignIn = () => {
       return;
     }
 
-    // Check user credentials against localStorage
-    setTimeout(() => {
-      try {
-        const users = JSON.parse(localStorage.getItem("users") || "[]");
-        const user = users.find((u: any) => u.email === email && u.password === password);
-        
-        if (user) {
-          // Store current user (session)
-          localStorage.setItem("currentUser", JSON.stringify(user));
-          
-          // If remember me is checked, store login state
-          if (rememberMe) {
-            localStorage.setItem("isLoggedIn", "true");
-          }
-          
-          toast.success("Login successful!");
-          navigate("/dashboard");
-        } else {
-          toast.error("Invalid email or password");
-        }
-      } catch (error) {
-        toast.error("Authentication failed");
-      } finally {
-        setIsLoading(false);
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        throw error;
       }
-    }, 1000);
+
+      if (data.user) {
+        // If remember me is checked, persist session
+        if (!rememberMe) {
+          // For non-persistent sessions, we could implement additional logic here
+          // But Supabase handles session persistence by default
+        }
+        
+        toast.success("Login successful!");
+        navigate("/dashboard");
+      }
+    } catch (error: any) {
+      console.error("Authentication error:", error);
+      toast.error(error.message || "Invalid email or password");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const handleGoogleSignIn = () => {
+  const handleGoogleSignIn = async () => {
     setIsLoading(true);
     
-    // Mock Google authentication
-    setTimeout(() => {
-      const mockGoogleUser = {
-        id: "google-" + Date.now().toString(),
-        fullName: "Google User",
-        email: "google.user@example.com",
-        createdAt: new Date().toISOString(),
-        profilePicture: null,
-        role: "applicant",
-        authProvider: "google"
-      };
-      
-      localStorage.setItem("currentUser", JSON.stringify(mockGoogleUser));
-      
-      // Add to users list if not already there
-      try {
-        const users = JSON.parse(localStorage.getItem("users") || "[]");
-        const existingUser = users.find((u: any) => u.email === mockGoogleUser.email);
-        
-        if (!existingUser) {
-          localStorage.setItem("users", JSON.stringify([...users, mockGoogleUser]));
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`
         }
-      } catch (error) {
-        console.error("Error updating users list:", error);
+      });
+
+      if (error) {
+        throw error;
       }
-      
-      toast.success("Signed in with Google successfully!");
-      navigate("/dashboard");
+      // The redirect is handled by Supabase
+    } catch (error) {
+      console.error("Google sign in error:", error);
+      toast.error("Failed to sign in with Google");
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
-  const handleGitHubSignIn = () => {
+  const handleGitHubSignIn = async () => {
     setIsLoading(true);
     
-    // Mock GitHub authentication
-    setTimeout(() => {
-      const mockGitHubUser = {
-        id: "github-" + Date.now().toString(),
-        fullName: "GitHub User",
-        email: "github.user@example.com",
-        createdAt: new Date().toISOString(),
-        profilePicture: null,
-        role: "applicant",
-        authProvider: "github"
-      };
-      
-      localStorage.setItem("currentUser", JSON.stringify(mockGitHubUser));
-      
-      // Add to users list if not already there
-      try {
-        const users = JSON.parse(localStorage.getItem("users") || "[]");
-        const existingUser = users.find((u: any) => u.email === mockGitHubUser.email);
-        
-        if (!existingUser) {
-          localStorage.setItem("users", JSON.stringify([...users, mockGitHubUser]));
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'github',
+        options: {
+          redirectTo: `${window.location.origin}/dashboard`
         }
-      } catch (error) {
-        console.error("Error updating users list:", error);
+      });
+
+      if (error) {
+        throw error;
       }
-      
-      toast.success("Signed in with GitHub successfully!");
-      navigate("/dashboard");
+      // The redirect is handled by Supabase
+    } catch (error) {
+      console.error("GitHub sign in error:", error);
+      toast.error("Failed to sign in with GitHub");
       setIsLoading(false);
-    }, 1500);
+    }
   };
 
   return (
