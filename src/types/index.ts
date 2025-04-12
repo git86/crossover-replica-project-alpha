@@ -30,6 +30,9 @@ export interface Profile {
   education: Education[] | null;
   created_at: string;
   updated_at: string;
+  selfie_verification: string | null;
+  passport_verification: string | null;
+  verification_status: string | null;
 }
 
 export interface Experience {
