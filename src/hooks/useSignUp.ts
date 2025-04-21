@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -97,7 +96,7 @@ export const useSignUp = () => {
         if (selfieError) {
           console.error("Error uploading selfie:", selfieError);
         } else {
-          selfieUrl = selfieData?.path || null;
+          selfieUrl = (selfieData?.path as string) || null;
         }
       }
 
@@ -110,11 +109,10 @@ export const useSignUp = () => {
         if (passportError) {
           console.error("Error uploading passport photo:", passportError);
         } else {
-          passportUrl = passportData?.path || null;
+          passportUrl = (passportData?.path as string) || null;
         }
       }
 
-      // Fix: Ensure proper typing for the update_profile_verification function
       const { error: updateError } = await supabase.rpc('update_profile_verification', {
         user_id: authData.user.id,
         selfie_path: selfieUrl,
@@ -129,7 +127,6 @@ export const useSignUp = () => {
       toast.success("Account created successfully! Your verification is pending review.");
       localStorage.setItem("isLoggedIn", "true");
       
-      // Add 1 second delay to ensure the session is registered properly
       setTimeout(() => {
         navigate("/dashboard");
       }, 1000);
