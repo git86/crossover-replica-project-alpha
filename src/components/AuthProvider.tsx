@@ -33,52 +33,63 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     } = supabase.auth.onAuthStateChange((event, currentSession) => {
       console.log("Auth event:", event); // Debugging
       console.log("Current session:", currentSession); // Debugging
-
+  
       if (event === "SIGNED_OUT") {
-        // Handle sign-out event
-        setSession(null);
-        setUser(null);
-        localStorage.removeItem("isLoggedIn");
-        localStorage.removeItem("currentUser");
-        toast.success("Signed out successfully");
+          setSession(null);
+          setUser(null);
+          localStorage.removeItem("isLoggedIn");
+          localStorage.removeItem("currentUser");
+          toast.success("Signed out successfully");
       } else if (currentSession?.user) {
-        // Handle active session
-        setSession(currentSession);
-        setUser(currentSession.user);
-        localStorage.setItem("isLoggedIn", "true");
+          setSession(currentSession);
+          setUser(currentSession.user);
+          localStorage.setItem("isLoggedIn", "true");
+  
+          // Only fetch the profile if the user ID exists
+          if (currentSession.user.id) {
+              fetchUserProfile(currentSession.user.id);
+          } else {
+              console.error("No user ID found in session.");
+              toast.error("Unable to load user profile. Please contact support.");
+          }
       }
-
+  
       setIsLoading(false);
-    });
-
+  });
     // Cleanup subscription on unmount
     return () => subscription.unsubscribe();
   }, []);
 
   const fetchUserProfile = async (userId: string) => {
     try {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", userId)
-        .single();
+        const { data, error } = await supabase
+            .from("profiles")
+            .select("*")
+            .eq("id", userId)
+            .single();
 
-      if (error) throw error;
+        if (error) {
+            throw error; // Throw error to handle it below
+        }
 
-      if (data) {
-        // Store user data in localStorage for Dashboard access
-        localStorage.setItem(
-          "currentUser",
-          JSON.stringify({
-            id: userId,
-            ...data
-          })
-        );
-      }
-    } catch (error) {
-      console.error("Error fetching user profile:", error);
+        if (data) {
+            // Store user data in localStorage for Dashboard access
+            localStorage.setItem(
+                "currentUser",
+                JSON.stringify({
+                    id: userId,
+                    ...data,
+                })
+            );
+            console.log("User profile fetched successfully:", data); // Debugging
+        }
+    } catch (error: any) {
+        console.error("Error fetching user profile:", error.message || error);
+
+        // Optional: Show a fallback notification
+        toast.error("Unable to load user profile. Please contact support.");
     }
-  };
+};
 
   const signOut = async () => {
     await supabase.auth.signOut();
