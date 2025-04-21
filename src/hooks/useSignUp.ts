@@ -122,8 +122,8 @@ export const useSignUp = () => {
         }
       }
 
-      // Type assertion for the RPC parameters
-      const { error: updateError } = await supabase.rpc<void, UpdateProfileVerificationParams>(
+      // Fix: Remove the generic type parameter that's causing the error
+      const { error: updateError } = await supabase.rpc(
         'update_profile_verification', 
         {
           user_id: authData.user.id,
