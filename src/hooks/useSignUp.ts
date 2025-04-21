@@ -1,9 +1,18 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
 type VerificationType = 'selfie' | 'passportPhoto';
+
+// Define an interface for the RPC function parameters
+interface UpdateProfileVerificationParams {
+  user_id: string;
+  selfie_path: string | null;
+  passport_path: string | null;
+  verification_status: string;
+}
 
 export const useSignUp = () => {
   const [step, setStep] = useState(1);
@@ -113,12 +122,16 @@ export const useSignUp = () => {
         }
       }
 
-      const { error: updateError } = await supabase.rpc('update_profile_verification', {
-        user_id: authData.user.id,
-        selfie_path: selfieUrl as string | null,
-        passport_path: passportUrl as string | null,
-        verification_status: 'pending'
-      });
+      // Type assertion for the RPC parameters
+      const { error: updateError } = await supabase.rpc<void, UpdateProfileVerificationParams>(
+        'update_profile_verification', 
+        {
+          user_id: authData.user.id,
+          selfie_path: selfieUrl,
+          passport_path: passportUrl,
+          verification_status: 'pending'
+        }
+      );
 
       if (updateError) {
         console.error("Error updating profile with verification details:", updateError);
