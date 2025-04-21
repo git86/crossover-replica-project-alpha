@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 type AuthContextType = {
@@ -28,50 +27,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Set up auth state listener FIRST
+    // Set up auth state listener
     const {
       data: { subscription }
     } = supabase.auth.onAuthStateChange((event, currentSession) => {
-      console.log("Auth event:", event); // Debugging: Log the event
-      console.log("Current session:", currentSession); // Debugging: Log the session
+      console.log("Auth event:", event); // Debugging
+      console.log("Current session:", currentSession); // Debugging
 
-      setSession(currentSession);
-      setUser(currentSession?.user ?? null);
-
-      if (currentSession?.user) {
-        // User is signed in
-        localStorage.setItem("isLoggedIn", "true");
-      } else if (event === "SIGNED_OUT") {
-        // User signed out
+      if (event === "SIGNED_OUT") {
+        // Handle sign-out event
+        setSession(null);
+        setUser(null);
         localStorage.removeItem("isLoggedIn");
         localStorage.removeItem("currentUser");
         toast.success("Signed out successfully");
-      } else {
-        console.log("No active session found.");
-      }
-
-      setIsLoading(false);
-    });
-
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      console.log("Got existing session:", currentSession?.user?.id); // Debugging
-      setSession(currentSession);
-      setUser(currentSession?.user ?? null);
-
-      if (currentSession?.user) {
-        // User is logged in
+      } else if (currentSession?.user) {
+        // Handle active session
+        setSession(currentSession);
+        setUser(currentSession.user);
         localStorage.setItem("isLoggedIn", "true");
-
-        // Optional: Fetch user profile if needed
-        fetchUserProfile(currentSession.user.id);
-      } else {
-        console.log("No existing session found.");
       }
 
       setIsLoading(false);
     });
 
+    // Cleanup subscription on unmount
     return () => subscription.unsubscribe();
   }, []);
 
@@ -102,6 +82,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signOut = async () => {
     await supabase.auth.signOut();
+    setSession(null);
+    setUser(null);
     localStorage.removeItem("isLoggedIn");
     localStorage.removeItem("currentUser");
     toast.success("Signed out successfully");
