@@ -84,8 +84,8 @@ export const useSignUp = () => {
       if (authError) throw new Error(authError.message);
       if (!authData.user) throw new Error("Failed to create user account");
 
-      let selfieUrl = null;
-      let passportUrl = null;
+      let selfieUrl: string | null = null;
+      let passportUrl: string | null = null;
 
       if (verificationData.selfie) {
         const selfieFileName = `verification/${authData.user.id}/selfie-${Date.now()}`;
@@ -115,8 +115,8 @@ export const useSignUp = () => {
 
       const { error: updateError } = await supabase.rpc('update_profile_verification', {
         user_id: authData.user.id,
-        selfie_path: selfieUrl,
-        passport_path: passportUrl,
+        selfie_path: selfieUrl as string | null,
+        passport_path: passportUrl as string | null,
         verification_status: 'pending'
       });
 
