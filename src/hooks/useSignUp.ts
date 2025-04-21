@@ -114,7 +114,7 @@ export const useSignUp = () => {
         }
       }
 
-      // Call profile function to update verification status
+      // Fix: Ensure proper typing for the update_profile_verification function
       const { error: updateError } = await supabase.rpc('update_profile_verification', {
         user_id: authData.user.id,
         selfie_path: selfieUrl,
