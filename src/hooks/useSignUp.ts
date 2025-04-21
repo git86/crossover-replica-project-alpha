@@ -122,15 +122,15 @@ export const useSignUp = () => {
         }
       }
 
-      // Fix: Remove the generic type parameter that's causing the error
+      // Using the update_profile_verification function without generic type parameters
       const { error: updateError } = await supabase.rpc(
-        'update_profile_verification', 
+        'update_profile_verification',
         {
           user_id: authData.user.id,
           selfie_path: selfieUrl,
           passport_path: passportUrl,
           verification_status: 'pending'
-        }
+        } as UpdateProfileVerificationParams  // Type assertion to ensure TypeScript recognizes the correct type
       );
 
       if (updateError) {
