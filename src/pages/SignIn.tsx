@@ -24,38 +24,23 @@ const SignIn = () => {
     }
   }, [user, navigate]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
+  supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+    console.log("Got existing session:", currentSession?.user?.id); // Debugging
+    setSession(currentSession);
+    setUser(currentSession?.user ?? null);
 
-    // Validate inputs
-    if (!email || !password) {
-      toast.error("Please enter both email and password");
-      setIsLoading(false);
-      return;
+    if (currentSession?.user) {
+        // User is logged in
+        localStorage.setItem("isLoggedIn", "true");
+
+        // Optional: Fetch user profile if needed
+        fetchUserProfile(currentSession.user.id);
+    } else {
+        console.log("No existing session found.");
     }
 
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
-
-      if (error) {
-        throw error;
-      }
-
-      if (data.user) {
-        toast.success("Login successful!");
-        navigate("/dashboard");
-      }
-    } catch (error: any) {
-      console.error("Authentication error:", error);
-      toast.error(error.message || "Invalid email or password");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    setIsLoading(false);
+});
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);

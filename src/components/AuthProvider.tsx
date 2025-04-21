@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useEffect, useState } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -30,37 +29,46 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, currentSession) => {
-        console.log("Auth state changed:", event);
-        setSession(currentSession);
-        setUser(currentSession?.user ?? null);
-        
-        // Store auth status in localStorage for Navbar to detect
-        if (currentSession?.user) {
-          localStorage.setItem("isLoggedIn", "true");
-        } else if (event === 'SIGNED_OUT') {
-          localStorage.removeItem("isLoggedIn");
-          localStorage.removeItem("currentUser");
-        }
-        
-        setIsLoading(false);
+    const {
+      data: { subscription }
+    } = supabase.auth.onAuthStateChange((event, currentSession) => {
+      console.log("Auth event:", event); // Debugging: Log the event
+      console.log("Current session:", currentSession); // Debugging: Log the session
+
+      setSession(currentSession);
+      setUser(currentSession?.user ?? null);
+
+      if (currentSession?.user) {
+        // User is signed in
+        localStorage.setItem("isLoggedIn", "true");
+      } else if (event === "SIGNED_OUT") {
+        // User signed out
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("currentUser");
+        toast.success("Signed out successfully");
+      } else {
+        console.log("No active session found.");
       }
-    );
+
+      setIsLoading(false);
+    });
 
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
-      console.log("Got existing session:", currentSession?.user?.id);
+      console.log("Got existing session:", currentSession?.user?.id); // Debugging
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
-      
+
       if (currentSession?.user) {
+        // User is logged in
         localStorage.setItem("isLoggedIn", "true");
-        
-        // Also fetch user profile data for the dashboard
+
+        // Optional: Fetch user profile if needed
         fetchUserProfile(currentSession.user.id);
+      } else {
+        console.log("No existing session found.");
       }
-      
+
       setIsLoading(false);
     });
 
@@ -70,19 +78,22 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const fetchUserProfile = async (userId: string) => {
     try {
       const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
         .single();
-      
+
       if (error) throw error;
-      
+
       if (data) {
         // Store user data in localStorage for Dashboard access
-        localStorage.setItem("currentUser", JSON.stringify({
-          id: userId,
-          ...data
-        }));
+        localStorage.setItem(
+          "currentUser",
+          JSON.stringify({
+            id: userId,
+            ...data
+          })
+        );
       }
     } catch (error) {
       console.error("Error fetching user profile:", error);
@@ -99,15 +110,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const createAdminUser = async () => {
     try {
       setIsLoading(true);
-      
+
       // Create admin user if it doesn't exist
       const { data, error } = await supabase.auth.signUp({
-        email: 'admin@ussagency.com',
-        password: 'admin123',
+        email: "admin@ussagency.com",
+        password: "admin123",
         options: {
           data: {
-            full_name: 'USS AGENCY Admin',
-            role: 'admin'
+            full_name: "USS AGENCY Admin",
+            role: "admin"
           }
         }
       });
@@ -119,24 +130,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (data.user) {
         // After creating user, make sure they have admin role in profiles
         const { error: profileError } = await supabase
-          .from('profiles')
-          .upsert({
-            id: data.user.id,
-            full_name: 'USS AGENCY Admin',
-            email: 'admin@ussagency.com',
-            role: 'admin'
-          }, { onConflict: 'id' });
+          .from("profiles")
+          .upsert(
+            {
+              id: data.user.id,
+              full_name: "USS AGENCY Admin",
+              email: "admin@ussagency.com",
+              role: "admin"
+            },
+            { onConflict: "id" }
+          );
 
         if (profileError) throw profileError;
-        
-        toast.success("Admin account created successfully: admin@ussagency.com / admin123");
+
+        toast.success(
+          "Admin account created successfully: admin@ussagency.com / admin123"
+        );
       }
     } catch (error: any) {
       console.error("Error creating admin:", error);
-      
+
       // If the error is that the user already exists, just show a different message
-      if (error.message?.includes('already registered')) {
-        toast.info("Admin account already exists: admin@ussagency.com / admin123");
+      if (error.message?.includes("already registered")) {
+        toast.info(
+          "Admin account already exists: admin@ussagency.com / admin123"
+        );
       } else {
         toast.error(error.message || "Failed to create admin account");
       }
@@ -146,7 +164,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ session, user, isLoading, signOut, createAdminUser }}>
+    <AuthContext.Provider
+      value={{ session, user, isLoading, signOut, createAdminUser }}
+    >
       {children}
     </AuthContext.Provider>
   );
