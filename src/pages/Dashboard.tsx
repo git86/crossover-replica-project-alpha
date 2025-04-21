@@ -13,13 +13,15 @@ import AdminJobsSection from "@/components/dashboard/admin/AdminJobsSection";
 import AdminApplicantsSection from "@/components/dashboard/admin/AdminApplicantsSection";
 import AdminInterviewsSection from "@/components/dashboard/admin/AdminInterviewsSection";
 import { toast } from "sonner";
+import { useAuth } from "@/components/AuthProvider";
+import { Button } from "@/components/ui/button";
 
 interface User {
   id: string;
-  fullName: string;
-  email: string;
-  profilePicture: string | null;
-  role: string;
+  full_name: string | null;
+  email: string | null;
+  role?: string;
+  profilePicture?: string | null;
   [key: string]: any; // Allow for additional properties
 }
 
@@ -28,35 +30,49 @@ const Dashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const navigate = useNavigate();
+  const { session, signOut, createAdminUser } = useAuth();
 
   useEffect(() => {
-    // Check if user is logged in
-    const currentUser = localStorage.getItem("currentUser");
-    
-    if (!currentUser) {
-      toast.error("Please sign in to access the dashboard");
-      navigate("/sign-in");
-      return;
-    }
-    
-    try {
-      // Parse user data
-      const userData = JSON.parse(currentUser);
-      setUser(userData);
-    } catch (error) {
-      // If error parsing user data, redirect to sign in
-      localStorage.removeItem("currentUser");
-      toast.error("Session expired. Please sign in again");
-      navigate("/sign-in");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [navigate]);
+    const checkAuth = async () => {
+      try {
+        // If we have a session, we're logged in
+        if (!session) {
+          // No session, redirect to sign in
+          toast.error("Please sign in to access the dashboard");
+          navigate("/sign-in");
+          return;
+        }
 
-  const handleSignOut = () => {
-    localStorage.removeItem("currentUser");
-    localStorage.removeItem("isLoggedIn");
-    toast.success("Signed out successfully");
+        // Get user data from localStorage (set by AuthProvider)
+        const currentUser = localStorage.getItem("currentUser");
+        
+        if (currentUser) {
+          // Parse user data
+          const userData = JSON.parse(currentUser);
+          setUser(userData);
+        } else {
+          // If we have a session but no user data, we need to fetch it
+          // This can happen if the page is refreshed
+          toast.error("Unable to load user profile. Please sign in again.");
+          await signOut();
+          navigate("/sign-in");
+        }
+      } catch (error) {
+        console.error("Error checking auth:", error);
+        localStorage.removeItem("currentUser");
+        localStorage.removeItem("isLoggedIn");
+        toast.error("Session expired. Please sign in again");
+        navigate("/sign-in");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkAuth();
+  }, [navigate, session, signOut]);
+
+  const handleSignOut = async () => {
+    await signOut();
     navigate("/sign-in");
   };
 
@@ -113,8 +129,19 @@ const Dashboard = () => {
             <h1 className="text-2xl font-bold text-gray-900">
               {user?.role === "admin" ? "USS AGENCY Admin Dashboard" : "USS AGENCY Applicant Dashboard"}
             </h1>
-            <div className="text-sm text-gray-500">
-              Welcome back, <span className="font-semibold">{user?.fullName}</span>
+            <div className="flex items-center gap-4">
+              <div className="text-sm text-gray-500">
+                Welcome back, <span className="font-semibold">{user?.full_name}</span>
+              </div>
+              {!user?.role && (
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={createAdminUser}
+                >
+                  Create Admin Account
+                </Button>
+              )}
             </div>
           </div>
           

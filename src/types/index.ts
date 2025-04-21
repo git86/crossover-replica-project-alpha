@@ -33,6 +33,7 @@ export interface Profile {
   selfie_verification: string | null;
   passport_verification: string | null;
   verification_status: string | null;
+  role?: string;
 }
 
 export interface Experience {

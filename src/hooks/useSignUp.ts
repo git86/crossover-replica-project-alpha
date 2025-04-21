@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -96,7 +97,7 @@ export const useSignUp = () => {
         if (selfieError) {
           console.error("Error uploading selfie:", selfieError);
         } else {
-          selfieUrl = selfieData.path;
+          selfieUrl = selfieData?.path || null;
         }
       }
 
@@ -109,10 +110,11 @@ export const useSignUp = () => {
         if (passportError) {
           console.error("Error uploading passport photo:", passportError);
         } else {
-          passportUrl = passportData.path;
+          passportUrl = passportData?.path || null;
         }
       }
 
+      // Call profile function to update verification status
       const { error: updateError } = await supabase.rpc('update_profile_verification', {
         user_id: authData.user.id,
         selfie_path: selfieUrl,
@@ -125,7 +127,12 @@ export const useSignUp = () => {
       }
 
       toast.success("Account created successfully! Your verification is pending review.");
-      navigate("/dashboard");
+      localStorage.setItem("isLoggedIn", "true");
+      
+      // Add 1 second delay to ensure the session is registered properly
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 1000);
     } catch (error) {
       console.error("Registration error:", error);
       toast.error((error as Error).message || "Registration failed");

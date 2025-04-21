@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/components/AuthProvider";
 
 const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,53 +16,13 @@ const SignIn = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
-  // Set up admin account if it doesn't exist
   useEffect(() => {
-    const createAdminAccount = async () => {
-      try {
-        // Check if admin exists
-        const { data: profiles, error: profilesError } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('email', 'admin@ussagency.com')
-          .single();
-        
-        if (profilesError && profilesError.code !== 'PGRST116') {
-          // PGRST116 is "no rows returned" error, which is expected if admin doesn't exist
-          console.error("Error checking for admin:", profilesError);
-          return;
-        }
-
-        // If admin already exists, do nothing
-        if (profiles) {
-          return;
-        }
-
-        // Create admin user
-        const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-          email: 'admin@ussagency.com',
-          password: 'admin123',
-          email_confirm: true,
-          user_metadata: {
-            full_name: 'USS AGENCY Admin',
-            role: 'admin'
-          }
-        });
-
-        if (authError) {
-          console.error("Error creating admin:", authError);
-        } else {
-          console.log("Default admin account created");
-        }
-      } catch (error) {
-        console.error("Error setting up admin account:", error);
-      }
-    };
-
-    // Uncomment this when we have admin API access
-    // createAdminAccount();
-  }, []);
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -85,12 +46,6 @@ const SignIn = () => {
       }
 
       if (data.user) {
-        // If remember me is checked, persist session
-        if (!rememberMe) {
-          // For non-persistent sessions, we could implement additional logic here
-          // But Supabase handles session persistence by default
-        }
-        
         toast.success("Login successful!");
         navigate("/dashboard");
       }
