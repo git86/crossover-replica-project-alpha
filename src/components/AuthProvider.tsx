@@ -25,8 +25,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Listen for authentication state changes
     const { data: subscription } = supabase.auth.onAuthStateChange(
       (event, currentSession) => {
+        console.log("Auth event:", event); // Debugging
+        console.log("Current session in onAuthStateChange:", currentSession); // Debugging
+
         if (event === "SIGNED_OUT") {
           setSession(null);
           setUser(null);
@@ -40,22 +44,33 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }
     );
 
+    // Fetch the current session on component mount
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         setSession(session);
         setUser(session.user);
+        console.log("Session state after fetching session:", session);
+        console.log("User state after fetching session:", session?.user);
+      } else {
+        console.log("No session found during initialization.");
       }
       setIsLoading(false);
     });
 
+    // Cleanup the subscription on component unmount
     return () => subscription.unsubscribe();
   }, []);
 
   const signOut = async () => {
-    await supabase.auth.signOut();
-    setSession(null);
-    setUser(null);
-    toast.success("Signed out successfully");
+    try {
+      await supabase.auth.signOut();
+      setSession(null);
+      setUser(null);
+      toast.success("Signed out successfully");
+    } catch (error) {
+      console.error("Error during sign-out:", error);
+      toast.error("Failed to sign out. Please try again.");
+    }
   };
 
   return (
