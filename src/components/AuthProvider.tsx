@@ -44,14 +44,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           setSession(currentSession);
           setUser(currentSession.user);
           localStorage.setItem("isLoggedIn", "true");
-  
-          // Only fetch the profile if the user ID exists
-          if (currentSession.user.id) {
-              fetchUserProfile(currentSession.user.id);
-          } else {
-              console.error("No user ID found in session.");
-              toast.error("Unable to load user profile. Please contact support.");
-          }
       }
   
       setIsLoading(false);
