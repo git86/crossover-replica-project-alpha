@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 type AuthContextType = {
@@ -8,6 +9,7 @@ type AuthContextType = {
   user: User | null;
   isLoading: boolean;
   signOut: () => Promise<void>;
+  createAdminUser: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -15,6 +17,7 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   isLoading: true,
   signOut: async () => {},
+  createAdminUser: async () => {},
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -25,56 +28,145 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Listen for authentication state changes
-    const { data: subscription } = supabase.auth.onAuthStateChange(
-      (event, currentSession) => {
-        console.log("Auth event:", event); // Debugging
-        console.log("Current session in onAuthStateChange:", currentSession); // Debugging
+    // Set up auth state listener FIRST
+    const {
+      data: { subscription }
+    } = supabase.auth.onAuthStateChange((event, currentSession) => {
+      console.log("Auth event:", event); // Debugging: Log the event
+      console.log("Current session:", currentSession); // Debugging: Log the session
 
-        if (event === "SIGNED_OUT") {
-          setSession(null);
-          setUser(null);
-          toast.success("Signed out successfully");
-        } else if (currentSession?.user) {
-          setSession(currentSession);
-          setUser(currentSession.user);
-        }
+      setSession(currentSession);
+      setUser(currentSession?.user ?? null);
 
-        setIsLoading(false);
-      }
-    );
-
-    // Fetch the current session on component mount
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        setSession(session);
-        setUser(session.user);
-        console.log("Session state after fetching session:", session);
-        console.log("User state after fetching session:", session?.user);
+      if (currentSession?.user) {
+        // User is signed in
+        localStorage.setItem("isLoggedIn", "true");
+      } else if (event === "SIGNED_OUT") {
+        // User signed out
+        localStorage.removeItem("isLoggedIn");
+        localStorage.removeItem("currentUser");
+        toast.success("Signed out successfully");
       } else {
-        console.log("No session found during initialization.");
+        console.log("No active session found.");
       }
+
       setIsLoading(false);
     });
 
-    // Cleanup the subscription on component unmount
+    // THEN check for existing session
+    supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      console.log("Got existing session:", currentSession?.user?.id); // Debugging
+      setSession(currentSession);
+      setUser(currentSession?.user ?? null);
+
+      if (currentSession?.user) {
+        // User is logged in
+        localStorage.setItem("isLoggedIn", "true");
+
+        // Optional: Fetch user profile if needed
+        fetchUserProfile(currentSession.user.id);
+      } else {
+        console.log("No existing session found.");
+      }
+
+      setIsLoading(false);
+    });
+
     return () => subscription.unsubscribe();
   }, []);
 
-  const signOut = async () => {
+  const fetchUserProfile = async (userId: string) => {
     try {
-      await supabase.auth.signOut();
-      setSession(null);
-      setUser(null);
-      toast.success("Signed out successfully");
+      const { data, error } = await supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        // Store user data in localStorage for Dashboard access
+        localStorage.setItem(
+          "currentUser",
+          JSON.stringify({
+            id: userId,
+            ...data
+          })
+        );
+      }
     } catch (error) {
-      console.error("Error during sign-out:", error);
-      toast.error("Failed to sign out. Please try again.");
+      console.error("Error fetching user profile:", error);
+    }
+  };
+
+  const signOut = async () => {
+    await supabase.auth.signOut();
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("currentUser");
+    toast.success("Signed out successfully");
+  };
+
+  const createAdminUser = async () => {
+    try {
+      setIsLoading(true);
+
+      // Create admin user if it doesn't exist
+      const { data, error } = await supabase.auth.signUp({
+        email: "admin@ussagency.com",
+        password: "admin123",
+        options: {
+          data: {
+            full_name: "USS AGENCY Admin",
+            role: "admin"
+          }
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data.user) {
+        // After creating user, make sure they have admin role in profiles
+        const { error: profileError } = await supabase
+          .from("profiles")
+          .upsert(
+            {
+              id: data.user.id,
+              full_name: "USS AGENCY Admin",
+              email: "admin@ussagency.com",
+              role: "admin"
+            },
+            { onConflict: "id" }
+          );
+
+        if (profileError) throw profileError;
+
+        toast.success(
+          "Admin account created successfully: admin@ussagency.com / admin123"
+        );
+      }
+    } catch (error: any) {
+      console.error("Error creating admin:", error);
+
+      // If the error is that the user already exists, just show a different message
+      if (error.message?.includes("already registered")) {
+        toast.info(
+          "Admin account already exists: admin@ussagency.com / admin123"
+        );
+      } else {
+        toast.error(error.message || "Failed to create admin account");
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ session, user, isLoading, signOut }}>
+    <AuthContext.Provider
+      value={{ session, user, isLoading, signOut, createAdminUser }}
+    >
       {children}
     </AuthContext.Provider>
   );
