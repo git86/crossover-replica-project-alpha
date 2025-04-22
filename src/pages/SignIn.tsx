@@ -31,33 +31,40 @@ const SignIn = () => {
 
     // Validate inputs
     if (!email || !password) {
-      toast.error("Please enter both email and password");
-      setIsLoading(false);
-      return;
+        toast.error("Please enter both email and password");
+        setIsLoading(false);
+        return;
     }
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+        const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password,
+        });
 
-      if (error) {
-        throw error;
-      }
+        if (error) {
+            throw error;
+        }
 
-      if (data.user) {
-        toast.success("Login successful!");
-        navigate("/dashboard");
-      }
+        if (data.user) {
+            toast.success("Login successful!");
+
+            // Wait for session to stabilize
+            const { data: sessionData } = await supabase.auth.getSession();
+            if (sessionData?.session?.user) {
+                navigate("/dashboard");
+            } else {
+                console.error("Session did not stabilize after login.");
+                toast.error("Unable to verify session. Please try again.");
+            }
+        }
     } catch (error: any) {
-      console.error("Authentication error:", error);
-      toast.error(error.message || "Invalid email or password");
+        console.error("Authentication error:", error);
+        toast.error(error.message || "Invalid email or password");
     } finally {
-      setIsLoading(false);
+        setIsLoading(false);
     }
-  };
-
+};
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
 
